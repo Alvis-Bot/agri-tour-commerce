@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Login</title>
+</head>
+<link rel="stylesheet" media="all" href="./styles.css?v=1.0.6" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-app.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-auth.js"></script>
+<script>
+  $(document).ready(function() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyBnp5U6B-S7SxF0GfKZgXcc4L3gs14epjQ",
+      authDomain: "e-commerce-2d69f.firebaseapp.com",
+      projectId: "e-commerce-2d69f",
+      storageBucket: "e-commerce-2d69f.appspot.com",
+      messagingSenderId: "1046175354076",
+      appId: "1:1046175354076:web:f8961626cb403c6c2b3819",
+      measurementId: "G-QF11MF2EEC"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().languageCode = "vi";
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+      "size": "small",
+      "callback": function(response) {
+        if ($("#confirm").is(":checked")) {
+          document.getElementById("phone-login").disabled = false;
+        }
+      },
+      "expired-callback": function() {
+        // Response expired. Ask user to solve reCAPTCHA again.
+        // ...
+      }
+    });
+    recaptchaVerifier.render().then(function(widgetId) {
+      window.recaptchaWidgetId = widgetId;
+    });
+    firebase.auth().getRedirectResult().then(function(result) {
+      var user = result.user;
+      user.getIdToken()
+        .then(function(token) {
+          return auth(token);
+        })
+        .catch(function(reason) {
+          alert(reason.toString());
+        });
+    }).catch(function(error) {
+
+    }).finally(function() {
+      $("#loading").hide();
+    });
+    $("#phone-login").click(function(event) {
+      event.preventDefault();
+      console.log("begin");
+      var phoneNumber = document.getElementById("input-phone").value;
+      console.log(phoneNumber);
+      var appVerifier = window.recaptchaVerifier;
+      $("#loading").show();
+      firebase.auth().signInWithPhoneNumber("+84" + phoneNumber, appVerifier)
+        .then(function(confirmationResult) {
+          // SMS sent. Prompt user to type the code from the message, then sign the
+          // user in with confirmationResult.confirm(code).
+          window.confirmationResult = confirmationResult;
+          $(".confirm-code").show();
+          $(".login-item").hide();
+        }).catch(function(error) {
+        grecaptcha.reset(window.recaptchaWidgetId);
+        alert("Số điện thoại không đúng");
+        // Error; SMS not sent
+        // ...
+      }).finally(function() {
+        $("#loading").hide();
+      });
+    });
+    $("#facebook-login").click(function(event) {
+      event.preventDefault();
+      firebase.auth().signInWithRedirect(provider);
+    });
+    $("#confirm-code").click(function() {
+      var code = document.getElementById("input-code").value;
+      $("#loading").show();
+      confirmationResult.confirm(code).then(function(result) {
+        // User signed in successfully.
+        var user = result.user;
+        user.getIdToken()
+          .then(function(token) {
+            console.log(token);
+            alert("bật f12 để xem token");
+            //return auth(token)
+          });
+        // ...
+      }).catch(function(error) {
+        alert("Sai mã xác nhận");
+      }).finally(function() {
+        $("#loading").hide();
+      });
+    });
+    $("input[name=confirm]").change(function() {
+      if ($(this).is(":checked")) {
+        var response = grecaptcha.getResponse();
+        if (response.length !== 0) {
+          document.getElementById("phone-login").disabled = false;
+        }
+      } else {
+        document.getElementById("phone-login").disabled = true;
+      }
+    });
+  });
+
+
+</script>
+<style>
+    .flag {
+        margin-right: 10px;
+        vertical-align: middle
+    }
+
+    input:-webkit-autofill {
+        animation-name: onAutoFillStart;
+        transition: background-color 50000s ease-in-out 0s
+    }
+
+    input:not(:-webkit-autofill) {
+        animation-name: onAutoFillCancel
+    }
+
+    /*! * Generated with CSS Flag Sprite generator (https://www.flag-sprites.com/) */
+    .flag.flag-ng {
+        background-position: -208px -99px
+    }
+
+    .flag.flag-to {
+        background-position: -128px -143px
+    }
+
+    .flag.flag-tf {
+        background-position: -256px -132px
+    }
+
+    .flag.flag-id {
+        background-position: -256px -55px
+    }
+
+    .flag.flag-li {
+        background-position: -208px -77px
+    }
+
+    .flag.flag-vi {
+        background-position: -112px -154px
+    }
+
+    .flag.flag-vn {
+        background-position: -128px -154px
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box
+    }
+
+    * {
+        -webkit-tap-highlight-color: transparent
+    }
+
+    a, b, body, center, div, em, form, h1, h2, h3, h4, h5, h6, header, html, i, img, li, p, s, span, strong, ul {
+        border: 0;
+        font: inherit;
+        vertical-align: baseline;
+        margin: 0;
+        padding: 0
+    }
+
+    header {
+        display: block
+    }
+
+    ul, ul li {
+        list-style: none
+    }
+
+    a {
+        color: #0190f3;
+        outline: 0
+    }
+
+    a:hover {
+        text-decoration: none
+    }
+
+    p {
+        margin: 0
+    }
+
+    strong {
+        font-weight: 700
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        font-weight: inherit
+    }
+
+    form, ul, ul ul li {
+        margin-bottom: 0
+    }
+
+    li, li p {
+        line-height: 1.42857
+    }
+
+    a, img, li, span {
+        text-decoration: none;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+    }
+
+    .hidden {
+        display: none !important
+    }
+
+    .block {
+        display: block !important
+    }
+
+    .btn {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .btn, .textAlign-center {
+        text-align: center
+    }
+
+    .space {
+        padding-top: 5px;
+        padding-bottom: 5px
+    }
+
+    .space.m {
+        padding-top: 10px;
+        padding-bottom: 10px
+    }
+
+    .width-100 {
+        width: 100% !important;
+        max-width: 100% !important
+    }
+
+    .dropdown {
+        display: inline-block;
+        position: relative
+    }
+
+    html {
+        -webkit-font-smoothing: antialiased
+    }
+
+    body {
+        background: #eee;
+        min-height: 100vh;
+        position: relative;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 400;
+        line-height: 1.42857;
+        text-rendering: optimizeLegibility;
+        -webkit-text-size-adjust: 100%
+    }
+
+    @media only screen and (max-width: 992px) {
+        body {
+            background: #f4f8fb
+        }
+    }
+
+    a {
+        cursor: pointer
+    }
+
+    .tel {
+        display: block;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 26px;
+        font-weight: 700
+    }
+
+    a, img {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, .2) !important
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: #0190f3;
+        min-width: 210px;
+        vertical-align: middle;
+        cursor: pointer;
+        white-space: nowrap;
+        color: #fff;
+        font-weight: 500;
+        border: 0 none;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px
+    }
+
+    .btn:hover {
+        background-color: #0184e0
+    }
+
+    .btn.disabled, .btn[disabled] {
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: .5;
+        -webkit-box-shadow: none;
+        box-shadow: none
+    }
+
+    .btn.btn-default {
+        background-color: #3C5A99;
+        color: #FFF;
+        -webkit-box-shadow: inset 0 0 0 1px #FFF;
+        box-shadow: inset 0 0 0 1px #FFF
+    }
+
+    .btn.btn-default:hover {
+        color: #0184e0;
+        -webkit-box-shadow: inset 0 0 0 1px #0184e0;
+        box-shadow: inset 0 0 0 1px #0184e0
+    }
+
+    .btn.btn-default i {
+        margin-right: 7px;
+    }
+
+    .btn.btn-link {
+        background: 0 0;
+        color: #0190f3;
+        border: 0 none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        text-decoration: underline;
+        text-transform: none
+    }
+
+    .btn.btn-link:hover {
+        color: #0173c2
+    }
+
+    .btn.btn--s {
+        min-width: auto;
+        height: 30px;
+        padding: 0 20px;
+        line-height: 30px;
+        font-size: 1.0rem
+    }
+
+    .btn.btn--m {
+        height: 44px;
+        line-height: 44px;
+        padding: 0 20px;
+        font-size: 1.0rem
+    }
+
+    @media only screen and (max-width: 349px) {
+        .btn.btn--m {
+            height: 38px;
+            line-height: 38px;
+            padding: 0 8px;
+            font-size: .75rem
+        }
+    }
+
+    .btn.btn-rq {
+        -webkit-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08)
+    }
+
+    input, select {
+        display: inline-block;
+        background-color: transparent;
+        width: 100%;
+        padding: 6px 0;
+        font-size: 1.0rem;
+        font-weight: bold;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        border: none
+    }
+
+    input:focus, select:focus {
+        outline: 0 none
+    }
+
+    input:disabled, select:disabled {
+        background-color: #fff;
+        color: #999
+    }
+
+    input[type=checkbox], input[type=radio] {
+        width: auto;
+        -webkit-box-shadow: none;
+        box-shadow: none
+    }
+
+    select {
+        padding: 6px 10px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none
+    }
+
+    .wrap-select {
+        display: inline-block;
+        position: relative;
+        background-color: transparent;
+        width: 100%;
+        height: 28px;
+        border: none
+    }
+
+    .wrap-select:before {
+        position: absolute;
+        top: 13px;
+        right: 3px;
+        z-index: 1;
+        content: "";
+        height: 0;
+        width: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #888
+    }
+
+    .wrap-select select {
+        position: relative;
+        z-index: 2;
+        background-color: transparent;
+        padding-right: 22px;
+        padding-left: 0;
+        border: 0 none;
+        -webkit-box-shadow: none;
+        box-shadow: none
+    }
+
+    .wrap-select.disabled {
+        background-color: #f1f1f1
+    }
+
+    .wrap-select.disabled:before {
+        opacity: .5
+    }
+
+    .wrap-select select::-ms-expand {
+        display: none
+    }
+
+    .header {
+        position: relative;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+    }
+
+    .login-type {
+        text-align: center;
+    }
+
+    .header h1 a {
+        display: block;
+        background: url(https://i.imgur.com/saV8l5T.png) 0 0 no-repeat;
+        background-size: cover;
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 18px
+    }
+
+    @media only screen and (max-width: 575px) {
+        .header h1 a {
+            width: 60px;
+            height: 60px
+        }
+    }
+
+    .header h2 {
+        display: block;
+        margin-bottom: 18px;
+        color: #333;
+        font-size: 1.35em;
+        font-weight: 600;
+        text-align: center
+    }
+
+    .header p {
+        display: block;
+        margin-bottom: 18px;
+        color: #666;
+        font-size: 0.9em;
+        font-weight: 400;
+        text-align: center;
+        max-width: 400px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .small {
+        font-size: 0.75em;
+    }
+
+    .header h2 strong {
+        font-weight: 400
+    }
+
+    @media only screen and (max-width: 575px) {
+        .header h2 {
+            margin-bottom: 15px;
+            font-size: 1.125em;
+            padding: 0 20px
+        }
+    }
+
+    @media only screen and (max-width: 349px) {
+        .header h2 {
+            padding: 0 20px
+        }
+    }
+
+    .body {
+        margin-bottom: 50px
+    }
+
+    .body .top {
+        position: relative;
+        max-width: 400px;
+        margin: 36px auto 16px;
+        text-align: center;
+        font-size: .875em
+    }
+
+    .body .top .title-top {
+        margin-top: 10px;
+        padding: 0 20px
+    }
+
+    .body .body-container {
+        position: relative;
+        background-color: #fff;
+        max-width: 400px;
+        margin: 0 auto;
+        -webkit-box-shadow: 0 8px 24px rgba(21, 48, 142, .14);
+        box-shadow: 0 8px 24px rgba(21, 48, 142, .14);
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px
+    }
+
+    .body .body-container::after {
+        clear: both;
+        content: "";
+        display: table
+    }
+
+    .body .body-container .form-signin {
+        padding: 30px 45px
+    }
+
+    @media only screen and (max-width: 349px) {
+        .body .body-container .form-signin {
+            padding: 24px 12px
+        }
+    }
+
+    .body .body-container .form-signin .line-form {
+        position: relative;
+        margin-bottom: 18px;
+        padding: 5px 0
+    }
+
+    .body .body-container .form-signin .line-form:after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: "";
+        background-color: #ecedf0;
+        width: 100%;
+        height: 1px
+    }
+
+    .body .body-container .form-signin .line-form:before {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: "";
+        background-color: #ecedf0;
+        width: 100%;
+        height: 1px
+    }
+
+    .body .body-container .form-signin .line-form input {
+        color: #333
+    }
+
+    .body .body-container .form-signin .line-form.has-disabled {
+        background-color: #f7f7f7;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px
+    }
+
+    .body .body-container .form-signin .line-form.has-ico {
+        padding-left: 28px
+    }
+
+    .body .body-container .form-signin .line-form.has-ico i {
+        position: absolute;
+        top: 12px;
+        left: 3px;
+        color: #555;
+        font-size: 1em
+    }
+
+    .body .body-container .form-signin .line-form.has-ico i.fa-mobile {
+        top: 10px;
+        left: 5px;
+        font-size: 1.25em
+    }
+
+    .body .body-container .form-signin .line-form.has-flag {
+        padding-left: 100px
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag {
+        display: block;
+        position: absolute;
+        top: 4px;
+        left: 22px;
+        font-size: 87.5%;
+        width: 60px;
+        font-weight: bold;
+        text-align: right
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .tf {
+        display: inline-block;
+        position: relative;
+        font-size: 1.0rem;
+        width: 70px;
+        padding: 5px 5px 4px;
+        padding-right: 25px;
+        vertical-align: middle
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .tf:before {
+        position: absolute;
+        top: 12px;
+        right: 5px;
+        content: "";
+        height: 0;
+        width: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #888
+    }
+
+    @media only screen and (max-width: 575px) {
+        .body .body-container .form-signin .line-form.has-flag .select-flag .tf:before {
+            top: 13px;
+            right: 7px
+        }
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .tf:hover {
+        background-color: #f8f8f8;
+        cursor: pointer
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag {
+        position: absolute;
+        top: 30px;
+        left: 0;
+        z-index: 1;
+        background-color: #fff;
+        width: 300px;
+        max-height: 300px;
+        -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+        border: 1px solid #bbb;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: left;
+        -webkit-overflow-scrolling: touch
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li {
+        position: relative;
+        padding: 8px 10px
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li span {
+        display: inline-block;
+        vertical-align: middle
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li span em {
+        position: relative;
+        top: 1px;
+        font-style: normal;
+        color: #666
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li strong {
+        display: inline-block;
+        max-width: 150px;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        vertical-align: middle;
+        font-weight: 400
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li img {
+        display: inline-block;
+        max-width: 16px;
+        height: auto;
+        margin-right: 10px;
+        vertical-align: middle
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li:hover {
+        background-color: #f8f8f8;
+        cursor: pointer
+    }
+
+    .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag ul li.selected {
+        margin-bottom: 10px;
+        border-bottom: 1px solid #aaa
+    }
+
+    @media only screen and (max-width: 992px) {
+        .body .body-container .form-signin .line-form.has-flag .select-flag {
+            font-size: 93.8%
+        }
+
+        .body .body-container .form-signin .line-form.has-flag .select-flag .dropdown-flag {
+            width: 250px
+        }
+    }
+
+    .body .body-container .form-signin p:last-child {
+        margin-bottom: 0
+    }
+
+    .body .body-container p {
+        font-size: .938em;
+        margin-bottom: 10px
+    }
+
+    .body .body-container p.first {
+        background-color: #e1eff9;
+        margin-bottom: 24px;
+        padding: 12px;
+        color: #333;
+        font-size: .813em;
+        text-align: center;
+        border: 1px solid #eceef2;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px
+    }
+
+    @media only screen and (max-width: 992px) {
+        .body .body-container p.first {
+            background-color: #fff
+        }
+    }
+
+    .body .body-container .link {
+        color: #0190f3;
+        font-size: .875em
+    }
+
+    .body .body-container .link:hover {
+        text-decoration: underline
+    }
+
+    @media only screen and (max-width: 992px) {
+        .body .body-container .link {
+            font-size: .938em
+        }
+    }
+
+    .body .body-container .btn-wrap {
+        position: relative
+    }
+
+    .body .body-container .btn-wrap .btn {
+        width: 100%
+    }
+
+    .body .body-container .btn-wrap-more {
+        position: relative;
+        margin-top: 12px
+    }
+
+    .body .body-container .btn-wrap-more .btn-rq {
+        position: relative;
+        width: 100%;
+        margin-bottom: 12px
+    }
+
+    button {
+        width: 100%;
+    }
+
+    @media only screen and (max-width: 992px) {
+        .body .body-container {
+            background: 0 0;
+            min-height: auto;
+            padding: 0 12px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            border: none
+        }
+
+        .body .body-container .form-signin {
+            background-color: #fff;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 24px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 8px 24px rgba(21, 48, 142, .14);
+            box-shadow: 0 8px 24px rgba(21, 48, 142, .14)
+        }
+
+        .body .line-form.has-ico i {
+            font-size: 1.25em
+        }
+
+        .body .line-form input, .body .line-form select {
+            font-size: .938rem
+        }
+
+        .btn {
+            min-width: 200px
+        }
+    }
+
+    @media only screen and (max-width: 992px) {
+        .body .body-container {
+            padding: 0 6px
+        }
+
+        .body .body-container .form-signin {
+            padding: 24px 12px
+        }
+    }
+
+    ::-webkit-input-placeholder {
+        color: #aeaeae
+    }
+
+    ::-moz-placeholder {
+        color: #aeaeae
+    }
+
+    :-ms-input-placeholder {
+        color: #aeaeae
+    }
+
+    :-moz-placeholder {
+        color: #aeaeae
+    }
+
+    div::-webkit-scrollbar {
+        width: 6px;
+        height: 6px
+    }
+
+    div::-webkit-scrollbar-thumb {
+        background-color: #cecbcb;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px
+    }
+
+    div::-webkit-scrollbar-track {
+        background: 0 0
+    }
+
+    /*! * Font Awesome 4.6.3 by @davegandy - http://fontawesome.io - @fontawesome * License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License) */
+    @font-face {
+        font-family: FontAwesome;
+        src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.eot);
+        src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.eot) format("embedded-opentype"), url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.ttf) format("truetype"), url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg) format("svg");
+        font-weight: 400;
+        font-style: normal
+    }
+
+    .fa {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale
+    }
+
+    .fa-ul {
+        padding-left: 0;
+        margin-left: 2.14285714em;
+        list-style-type: none
+    }
+
+    .fa-ul > li {
+        position: relative
+    }
+
+    .fa-li {
+        position: absolute;
+        left: -2.14285714em;
+        width: 2.14285714em;
+        top: .14285714em;
+        text-align: center
+    }
+
+    @-webkit-keyframes fa-spin {
+        0% {
+            -webkit-transform: rotate(0);
+            transform: rotate(0)
+        }
+        100% {
+            -webkit-transform: rotate(359deg);
+            transform: rotate(359deg)
+        }
+    }
+
+    @keyframes fa-spin {
+        0% {
+            -webkit-transform: rotate(0);
+            transform: rotate(0)
+        }
+        100% {
+            -webkit-transform: rotate(359deg);
+            transform: rotate(359deg)
+        }
+    }
+
+    .fa-flag:before {
+        content: "\F024"
+    }
+
+    .fa-text-width:before {
+        content: "\F035"
+    }
+
+    .fa-phone:before {
+        content: "\F095"
+    }
+
+    .fa-facebook:before {
+        content: "\F09A"
+    }
+
+    .fa-link:before {
+        content: "\F0C1"
+    }
+
+    .fa-mobile-phone:before, .fa-mobile:before {
+        content: "\F10B"
+    }
+
+    .fa-html5:before {
+        content: "\F13B"
+    }
+
+    .fa-css3:before {
+        content: "\F13C"
+    }
+
+    .fa-header:before {
+        content: "\F1DC"
+    }
+
+    .fa-fa:before {
+        content: "\F2B4"
+    }
+
+    .confirm-code {
+        display: none;
+    }
+
+    .login-item {
+        display: block;
+        margin: auto;
+        text-align: center;
+    }
+
+    .captcha {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Absolute Center Spinner */
+    .loading {
+        position: fixed;
+        z-index: 999;
+        height: 2em;
+        width: 2em;
+        overflow: visible;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    /* Transparent Overlay */
+    .loading:before {
+        content: '';
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    /* :not(:required) hides these rules from IE9 and below */
+    .loading:not(:required) {
+        /* hide "loading..." text */
+        font: 0/0 a;
+        color: transparent;
+        text-shadow: none;
+        background-color: transparent;
+        border: 0;
+    }
+
+    .loading:not(:required):after {
+        content: '';
+        display: block;
+        font-size: 10px;
+        width: 1em;
+        height: 1em;
+        margin-top: -0.5em;
+        -webkit-animation: spinner 1500ms infinite linear;
+        -moz-animation: spinner 1500ms infinite linear;
+        -ms-animation: spinner 1500ms infinite linear;
+        -o-animation: spinner 1500ms infinite linear;
+        animation: spinner 1500ms infinite linear;
+        border-radius: 0.5em;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+        box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+    }
+
+    /* Animation */
+
+    @-webkit-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @-moz-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @-o-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+</style>
+<body>
+<div class="loading" id="loading">Loading...</div>
+<div class="header">
+  <!-- <h1><a class="logo" style="cursor: auto;"></a></h1> -->
+  <h2 class="hide-on-med-and-down">Sign in with account</h2>
+  <p>By signing in, you are authorizing Google to access your devices</p>
+</div>
+<div class="body">
+  <div class="body-container">
+    <div class="content">
+      <div>
+        <div style="margin-top: 0;">
+          <div class="form-signin">
+            <div>
+              <div><p class="login-type">Sign in with phone number</p>
+                <div class="space"></div>
+                <div class="line-form has-ico has-flag">
+                  <div><i class="fa fa-mobile"></i>
+                    <div class="select-flag"><span class="tf">+84</span>
+                      <div class="dropdown-flag hidden">
+                        <ul>
+                          <li class="selected"><span
+                            class="flag flag-vn"></span><span><strong>Vietnam</strong> <em>+84</em></span></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <input id="input-phone" tabindex="1" type="tel" name="phone_num" maxlength="10" autocomplete="off"
+                         placeholder="Phone number" class="input">
+                </div>
+                <div class="confirm-code line-form has-ico">
+                  <div><i class="fa fa-link"></i>
+                  </div>
+                  <input maxlength="6" id="input-code" tabindex="1" type="tel" name="phone_num" autocomplete="off"
+                         placeholder="Confirm code" class="input">
+                </div>
+                <div id="recaptcha-container" class="captcha login-item"></div>
+                <div class="space"></div>
+                <div class="small">
+                  <input type="checkbox" id="confirm" checked name="confirm" value="confirm">
+                  Agree to <a href="https://thomi.com.vn/thomi-terms-of-service/">Terms of Service</a>, <a
+                  href="https://thomi.com.vn/thomi-privacy-policy/">Privacy Policy</a>
+                </div>
+                <div class="space"></div>
+                <button id="confirm-code" class="confirm-code btn btn--m first">Sign In</button>
+                <div class="login-item">
+                  <button id="phone-login" class="btn btn--m block first" disabled>Sign In</button>
+                </div>
+                <div class="space"></div>
+                <div class="space"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+
+
+</html>
