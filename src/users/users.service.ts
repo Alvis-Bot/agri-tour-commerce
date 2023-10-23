@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { LoginDto } from "@/users/dto/login.dto";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserUpdateDto } from "@/users/dto/user-update.dto";
@@ -76,4 +76,23 @@ export class UsersService {
     });
 
   }
+
+  async getUserById(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id
+      }
+    });
+  }
+
+  async findOneByUid(uid: string) {
+    return await this.userRepository.findOne({
+      where: {
+        uid
+      }
+    });
+
+  }
+
+
 }

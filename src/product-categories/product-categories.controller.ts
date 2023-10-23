@@ -16,7 +16,7 @@ import { ProductCategoryCreate } from "@/product-categories/dto/product-category
 import { Note } from "@/common/decorator/note.decorator";
 import { ShopService } from "@/shop/shop.service";
 import { AuthUser } from "@/common/decorator/user.decorator";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 import { FirebaseAuthGuard } from "@/auth/guard/firebase-auth.guard";
 import { ACGuard, UseRoles } from "nest-access-control";
 
@@ -40,12 +40,10 @@ export class ProductCategoriesController {
   @Note('Tạo mới danh mục sản phẩm')
   @ApiFile('image', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
   async create(
-    @AuthUser() user: User,
     @Body() dto: ProductCategoryCreate,
     @UploadedFile() image : Express.Multer.File
   ) {
-    const myShop = await this.shopService.getMyShop(user);
-    return await this.productCategoriesService.createProductCategory(image,dto ,myShop);
+    return await this.productCategoriesService.createProductCategory(image,dto);
   }
 
   @Get()
@@ -55,11 +53,8 @@ export class ProductCategoriesController {
     possession: "own", // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
   })
   @Note('Lấy danh sách danh mục sản phẩm theo shop')
-  async  getProductCategories(
-    @AuthUser() user: User
-  ) {
-    const myShop = await this.shopService.getMyShop(user);
-    return await this.productCategoriesService.getProductCategories(myShop);
+  async  getProductCategories() {
+    return await this.productCategoriesService.getProductCategories();
   }
 
   @Delete(':id')

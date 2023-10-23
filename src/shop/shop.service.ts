@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { ShopCreateDto } from "@/shop/dto/shop-create.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Shop } from "@/common/entities/shop.entity";
-import { Repository } from "typeorm";
-import { User } from "@/common/entities/user";
+import { FindOneOptions, Repository } from "typeorm";
+import { User } from "@/common/entities/user.entity";
 import { ApiException } from "@/exception/api.exception";
 import { ErrorMessages } from "@/exception/error.code";
 import { Pagination } from "@/common/pagination/pagination.dto";
@@ -11,6 +11,7 @@ import { Meta } from "@/common/pagination/meta.dto";
 import { PaginationModel } from "@/common/pagination/pagination.model";
 import { UsersService } from "@/users/users.service";
 import { UserRole } from "@/auth/role.builder";
+import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 
 @Injectable()
 export class ShopService {
@@ -23,13 +24,9 @@ export class ShopService {
   }
 
 
-  async createShop(dto: ShopCreateDto, myUser: User) {
+  async createShop(dto: ShopCreateDto, myUser: User): Promise<Shop> {
 
-    const myShop = await this.shopRepository.findOne({
-      where: {
-        user: myUser
-      }
-    });
+    const myShop = await this.findShopByUser(myUser);
 
     if (myShop) {
       throw new ApiException(ErrorMessages.SHOP_ALREADY_EXISTS);
@@ -45,23 +42,30 @@ export class ShopService {
     return await this.shopRepository.save(createdShop);
   }
 
-  async getMyShop(myUser: User) {
-    const myShop = await this.shopRepository.findOne({
+  async getMyShop(myUser: User): Promise<Shop> {
+    const options: FindOneOptions<Shop> = {
       where: {
-        user: myUser
-      }
-    });
+        user : myUser
+      } as FindOptionsWhere<Shop>,
+    };
+    const myShop = await this.shopRepository.findOne(options);
     if (!myShop) {
       throw new ApiException(ErrorMessages.SHOP_NOT_FOUND);
     }
     return myShop;
   }
 
-  async getShopById(id: number) {
-    const shop = await this.shopRepository.findOne({
+  async findShopByUser(myUser : User) : Promise<Shop>{
+    const options: FindOneOptions<Shop> = {
       where: {
-        id
-      }
+        user : myUser
+      } as FindOptionsWhere<Shop>,
+    };
+    return await this.shopRepository.findOne(options);
+  }
+  async getShopById(id: number): Promise<Shop> {
+    const shop = await this.shopRepository.findOne({
+      where: { id }
     });
     if (!shop) {
       throw new ApiException(ErrorMessages.SHOP_NOT_FOUND);
@@ -80,6 +84,5 @@ export class ShopService {
     const { entities } = await queryBuilder.getRawAndEntities();
     const meta = new Meta({ itemCount, pagination });
     return new PaginationModel(entities, meta);
-
   }
 }

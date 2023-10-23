@@ -11,6 +11,9 @@ import { ProductCategoriesModule } from './product-categories/product-categories
 import { ShopModule } from './shop/shop.module';
 import { AccessControlModule } from "nest-access-control";
 import { roles } from "@/auth/role.builder";
+import { ProductsModule } from './products/products.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -46,6 +49,9 @@ import { roles } from "@/auth/role.builder";
     UsersModule,
     RegionsModule,
     ProductCategoriesModule,
-    ShopModule],
+    ShopModule,
+    ProductsModule,
+    GatewayModule,
+    OrdersModule],
 })
 export class AppModule {}

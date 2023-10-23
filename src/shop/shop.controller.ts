@@ -5,13 +5,15 @@ import { Note } from "@/common/decorator/note.decorator";
 import { ShopCreateDto } from "@/shop/dto/shop-create.dto";
 import { FirebaseAuthGuard } from "@/auth/guard/firebase-auth.guard";
 import { AuthUser } from "@/common/decorator/user.decorator";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 import { Pagination } from "@/common/pagination/pagination.dto";
 import { ACGuard, UseRoles } from "nest-access-control";
 import { Public } from "@/common/decorator/public.meta";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller(Routers.SHOP)
 @UseGuards(FirebaseAuthGuard , ACGuard)
+@ApiTags('APIs for shop - API cửa hàng')
 export class ShopController {
   constructor(
     private readonly shopService: ShopService,

@@ -1,11 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { BusinessType } from "@/common/enums/business-type";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 import { AuditEntity } from "@/common/entities/audit.entity";
 import { ProductCategory } from "@/common/entities/product-category.entity";
+import { Product } from "@/common/entities/product.entity";
 
 @Entity("shops")
-export class Shop extends AuditEntity{
+export class Shop extends AuditEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,28 +17,26 @@ export class Shop extends AuditEntity{
   @Column()
   phone: string;
 
-  @Column({ type : 'enum', enum: BusinessType, default: BusinessType.INDIVIDUAL})
-  //loại hình doanh nghiệp
+  @Column({ type: "enum", enum: BusinessType, default: BusinessType.INDIVIDUAL })
+    //loại hình doanh nghiệp
   type: BusinessType;
 
   @Column()
-  //cmnd/cccd
+    //cmnd/cccd
   identity: string;
 
-  @Column({ nullable: true })
-  //mã thuế
-  taxCode: string;
+  @Column({ nullable: true, name: "tax_code" })
+    //mã thuế
+  taxCode?: string;
 
-  //một shop có nhiều danh mục sản phẩm
-  @OneToMany(() => ProductCategory, productCategory => productCategory.shop)
-  productCategory: ProductCategory[];
-
-
-  //một shop chỉ thuộc về một user
-  @ManyToOne(() => User , user => user.shop)
+  @OneToOne(() => User)
   @JoinColumn({ name: "user_id" })
   user: Relation<User>;
 
+
+  //một shop có nhiều sản phẩm
+  @OneToMany(() => Product, product => product.shop)
+  products: Product[];
 
 
 }

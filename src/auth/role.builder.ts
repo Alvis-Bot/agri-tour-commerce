@@ -19,6 +19,7 @@ roles
   .extend(UserRole.USER)
   .readOwn("shop")
   .updateOwn("shop")
+  .readOwn("product-categories")
   .createOwn("product-categories")
   .updateOwn("product-categories")
   .deleteOwn("product-categories")

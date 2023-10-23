@@ -1,8 +1,8 @@
 
 
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
-import { Shop } from "@/common/entities/shop.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
+import { Product } from "@/common/entities/product.entity";
 
 @Entity("product-categories")
 export class ProductCategory{
@@ -15,10 +15,8 @@ export class ProductCategory{
 
     @Column()
     image: string;
-
-   // một danh mục sản phẩm chỉ thuộc về một shop
-    @ManyToOne(() => Shop , shop => shop.productCategory)
-    @JoinColumn({ name: "shop_id" })
-    shop: Relation<Shop>;
+    // một danh mục sản phẩm có nhiều sản phẩm
+    @OneToMany(() => Product, product => product.category)
+    product:Relation<Product[]>
 
 }

@@ -18,21 +18,28 @@ export class ProductCategoriesService {
   ) {
   }
 
-  async createProductCategory(file: Express.Multer.File, dto: ProductCategoryCreate, myShop: Shop) {
+  async createProductCategory(file: Express.Multer.File, dto: ProductCategoryCreate) {
     const productCategory = this.productCategoryRepository.create({
       ...dto,
       image: file.filename,
-      shop: myShop
     });
     return await this.productCategoryRepository.save(productCategory);
   }
 
-  async getProductCategories(myShop: Shop) {
-    return await this.productCategoryRepository.find({
+  async getProductCategoryById(id: number) {
+    const productCategory = await this.productCategoryRepository.findOne({
       where: {
-        shop: myShop
+        id
       }
     });
+    if (!productCategory) {
+      throw new ApiException(ErrorMessages.CATEGORY_PRODUCT_NOT_FOUND);
+    }
+    return productCategory;
+  }
+
+  async getProductCategories() {
+    return await this.productCategoryRepository.find();
   }
 
   async deleteProductCategories(id: number) {

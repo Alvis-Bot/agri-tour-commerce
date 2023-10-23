@@ -12,8 +12,8 @@ const errorFactory: ErrorFactory = (status: HttpStatus, message: string) : IErro
 });
 export const ErrorMessages = {
   FORBIDDEN: errorFactory(HttpStatus.FORBIDDEN, "Forbidden"),
-  USER_EXISTED: errorFactory(HttpStatus.CONFLICT, "User existed"),
-  USER_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "User not found"),
+  USER_EXISTED: errorFactory(HttpStatus.CONFLICT, "UserEntity existed"),
+  USER_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "UserEntity not found"),
   //
   CATEGORY_PRODUCT_EXISTED: errorFactory(HttpStatus.CONFLICT, "Category product existed"),
   CATEGORY_PRODUCT_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Category product not found"),
@@ -22,6 +22,7 @@ export const ErrorMessages = {
   WARD_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Ward not found"),
   SHOP_ALREADY_EXISTS: errorFactory(HttpStatus.CONFLICT, "Shop already exists"),
   SHOP_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Shop not found"),
+  PRODUCT_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Product not found"),
 
 
 };

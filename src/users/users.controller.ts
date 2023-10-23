@@ -3,7 +3,7 @@ import { Routers } from "@/common/enums/routers";
 import { LoginDto } from "@/users/dto/login.dto";
 import { UsersService } from "@/users/users.service";
 import { AuthGuard } from "@nestjs/passport";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 import { FirebaseAuthGuard } from "@/auth/guard/firebase-auth.guard";
 import { UserUpdateDto } from "@/users/dto/user-update.dto";
 import { ApiTags } from "@nestjs/swagger";
@@ -18,7 +18,7 @@ interface AuthRequest{
 
 @Controller(Routers.USERS)
 @UseGuards(FirebaseAuthGuard , ACGuard)
-@ApiTags("User APIs  - Quản lý tài khoản")
+@ApiTags("UserEntity APIs  - Quản lý tài khoản")
 export class UsersController {
 
   constructor(

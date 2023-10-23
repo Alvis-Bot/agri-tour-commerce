@@ -2,7 +2,7 @@ import { Global, Module } from "@nestjs/common";
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "@/common/entities/user";
+import { User } from "@/common/entities/user.entity";
 @Global()
 @Module({
   imports: [

@@ -1,6 +1,6 @@
 import { BusinessType } from "@/common/enums/business-type";
-import { IsEnum, IsNotEmpty, IsPhoneNumber, IsString } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class ShopCreateDto{
 
@@ -30,10 +30,9 @@ export class ShopCreateDto{
   identity: string;
 
 
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
     //mã thuế
-  taxCode: string;
+  taxCode?: string;
 
 }

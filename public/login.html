@@ -86,7 +86,7 @@
       var code = document.getElementById("input-code").value;
       $("#loading").show();
       confirmationResult.confirm(code).then(function(result) {
-        // User signed in successfully.
+        // UserEntity signed in successfully.
         var user = result.user;
         user.getIdToken()
           .then(function(token) {
