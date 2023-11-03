@@ -23,6 +23,7 @@ export const ErrorMessages = {
   SHOP_ALREADY_EXISTS: errorFactory(HttpStatus.CONFLICT, "Shop already exists"),
   SHOP_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Shop not found"),
   PRODUCT_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, "Product not found"),
+  PRODUCT_RATING_EXIST: errorFactory(HttpStatus.CONFLICT, "Product rating existed"),
 
 
 };

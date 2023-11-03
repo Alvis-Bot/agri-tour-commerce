@@ -6,9 +6,11 @@ import { AuthUser } from "@/common/decorator/user.decorator";
 import { User } from "@/common/entities/user.entity";
 import { ProductRatingService } from "@/product-rating/product-rating.service";
 import { ProductRatingCreateDto } from "@/product-rating/dto/product-rating-create.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller('product-rating')
 @UseGuards(FirebaseAuthGuard , ACGuard)
+@ApiTags('APIs for product rating - API đánh giá sản phẩm')
 export class ProductRatingController {
 
   constructor(
@@ -19,7 +21,6 @@ export class ProductRatingController {
   @UseRoles({
     resource: "product-rating", // 👈 resource
     action: "create", // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: "any", // 👈 possession (e.g., own, any) // là bất kỳ ai cũng có thể tạo mới
   }) // 👈 resource
   @Note('Thêm mới đánh giá sản phẩm')
   async createProductRating(
