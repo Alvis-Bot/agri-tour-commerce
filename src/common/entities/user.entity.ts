@@ -5,6 +5,7 @@ import { Ward } from "@/common/entities/ward.entity";
 import { Shop } from "@/common/entities/shop.entity";
 import { UserRole } from "@/auth/role.builder";
 import { Order } from "@/common/entities/order.entity";
+import { ProductRatingEntity } from "@/common/entities/product-rating.entity";
 
 
 @Entity("users")
@@ -55,5 +56,8 @@ export class User {
 
   @OneToMany(() => Order, order => order.user, { cascade: true })
   orders: Order[];
+
+  @OneToMany(() => ProductRatingEntity, ratings => ratings.user, { cascade: true })
+  ratings: ProductRatingEntity[];
 
 }

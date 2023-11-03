@@ -20,9 +20,9 @@ export class MulterUtils{
   static getConfig(filesAllowed: UploadTypesEnum) {
     return {
       // Enable file size limits
-      limits: {
-        fileSize: +process.env.MAX_FILE_SIZE * 1024 * 1024,
-      },
+      // limits: {
+      //   fileSize: +process.env.MAX_FILE_SIZE * 1024 * 1024,
+      // },
       // Check the mimetypes to allow for upload
       fileFilter: (req: any, file: any, cb: any) => {
         console.log(file.mimetype);
@@ -45,13 +45,13 @@ export class MulterUtils{
           cb(null, uploadPath);
         },
         // File modification details
-        filename: (req: any, file: Express.Multer.File, cb: any) => {
+        filename: (req: any, file: any, cb: any) => {
           // Calling the callback passing the random name generated with
           // the original extension name
           cb(null, `${uuid()}.${extname(file.originalname).split(".").pop()}`);
         },
       }),
-    } as MulterOptions
+    }
   }
 
   static deleteFile(image: string) {

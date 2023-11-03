@@ -13,7 +13,7 @@ export class ProductCategory{
     @Column()
     name: string;
 
-    @Column()
+    @Column({ type: "text", nullable: true})
     image: string;
     // một danh mục sản phẩm có nhiều sản phẩm
     @OneToMany(() => Product, product => product.category)

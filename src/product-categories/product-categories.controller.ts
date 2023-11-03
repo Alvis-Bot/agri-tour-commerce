@@ -4,10 +4,10 @@ import {
   Delete,
   Get,
   Param,
-  Post, Query,
+  Post,
   UploadedFile, UseGuards
 } from "@nestjs/common";
-import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import {  ApiTags } from "@nestjs/swagger";
 import { UploadTypesEnum } from "@/common/enums/upload-types.enum";
 import { MulterUtils } from "@/common/utils/multer.utils";
 import { ApiFile } from "@/common/decorator/file.decorator";
@@ -15,8 +15,6 @@ import { ProductCategoriesService } from "@/product-categories/product-categorie
 import { ProductCategoryCreate } from "@/product-categories/dto/product-category-create";
 import { Note } from "@/common/decorator/note.decorator";
 import { ShopService } from "@/shop/shop.service";
-import { AuthUser } from "@/common/decorator/user.decorator";
-import { User } from "@/common/entities/user.entity";
 import { FirebaseAuthGuard } from "@/auth/guard/firebase-auth.guard";
 import { ACGuard, UseRoles } from "nest-access-control";
 
@@ -41,8 +39,9 @@ export class ProductCategoriesController {
   @ApiFile('image', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
   async create(
     @Body() dto: ProductCategoryCreate,
-    @UploadedFile() image : Express.Multer.File
+    @UploadedFile() image: Express.Multer.File,
   ) {
+    console.log(dto);
     return await this.productCategoriesService.createProductCategory(image,dto);
   }
 

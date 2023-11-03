@@ -14,6 +14,7 @@ import { roles } from "@/auth/role.builder";
 import { ProductsModule } from './products/products.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { OrdersModule } from './orders/orders.module';
+import { ProductRatingModule } from './product-rating/product-rating.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { OrdersModule } from './orders/orders.module';
     ShopModule,
     ProductsModule,
     GatewayModule,
-    OrdersModule],
+    OrdersModule,
+    ProductRatingModule],
 })
 export class AppModule {}

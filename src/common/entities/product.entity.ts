@@ -1,10 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Index, Relation } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Index, Relation, OneToMany } from "typeorm";
 import { ProductCategory } from "@/common/entities/product-category.entity";
 import { ApproveStatus } from "@/common/enums/approve-status";
 import { Shop } from "@/common/entities/shop.entity";
+import { ProductRatingEntity } from "@/common/entities/product-rating.entity";
+import { AuditEntity } from "@/common/entities/audit.entity";
 
 @Entity("products")
-export class Product {
+export class Product extends AuditEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -50,4 +52,6 @@ export class Product {
   @JoinColumn({ name: "shop_id" })
   shop: Relation<Shop>;
 
+  @OneToMany(() => ProductRatingEntity, ratings => ratings.product, { cascade: true })
+  ratings: ProductRatingEntity[];
 }

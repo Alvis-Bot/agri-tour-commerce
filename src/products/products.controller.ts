@@ -10,6 +10,7 @@ import { Note } from "@/common/decorator/note.decorator";
 import { ProductApproveDto } from "@/products/dto/product-approve.dto";
 import { ShopService } from "@/shop/shop.service";
 import { ProductQueryDto } from "@/products/dto/product-query.dto";
+import { Pagination } from "@/common/pagination/pagination.dto";
 
 @Controller(Routers.PRODUCTS)
 @ApiTags("APIs for products - APIs sản phẩm")
@@ -66,9 +67,10 @@ export class ProductsController {
   @Get()
   @Note("Lấy danh sách sản phẩm")
   async getProducts(
+    @Query() pagination: Pagination,
     @Query() dto: ProductQueryDto
   ) {
-    return await this.productsService.getProducts(dto);
+    return await this.productsService.getProducts(dto ,pagination);
   }
 
 

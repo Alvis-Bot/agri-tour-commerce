@@ -14,6 +14,10 @@ roles
   .grant(UserRole.USER)
   .readOwn("users")
   .updateOwn("users")
+  .readAny('product-rating')
+  .createAny('product-rating')
+  .updateAny('product-rating')
+  .createOwn('shop') // user có thể tạo shop cho mình
   // SHOP : xem thông tin shop của mình , sửa thông tin shop của mình , shop tạo category , product
   .grant(UserRole.SHOP)
   .extend(UserRole.USER)

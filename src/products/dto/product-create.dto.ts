@@ -5,7 +5,6 @@ import { ApproveStatus } from "@/common/enums/approve-status";
 
 export class ProductCreateDto {
   @IsString()
-  @Max(80)
   @ApiProperty()
   name: string;
 

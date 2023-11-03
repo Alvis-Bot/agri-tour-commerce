@@ -8,13 +8,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const { getResponse } = host.switchToHttp();
     const response: Response = getResponse();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    console.log(exception);
 
     if (exception instanceof ApiException) {
       response.status(status).json({
         code: exception.getStatus(),
         message: exception.message
       });
-    }else {
+    } else if (exception instanceof BadRequestException) {
+      response.status(status).json({
+        code: exception.getStatus(),
+        message: exception.getResponse()["message"]
+      });
+    } else {
       response.status(status).json({
         code: exception.getStatus(),
         message: exception.message
