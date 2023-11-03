@@ -29,7 +29,7 @@ export class Product extends AuditEntity {
   @Column({ type: "int" })
   quantity: number;
 
-  @Column({ type: "simple-array" })
+  @Column({ type: "simple-array" , nullable: true })
   images: string[];
 
   @Column({ type: "int" })
