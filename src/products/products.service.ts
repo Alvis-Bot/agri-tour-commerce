@@ -44,9 +44,29 @@ export class ProductsService {
   }
 
   async getProductById(id: number) {
-    const product = await this.productRepository.findOne({
-      where: { id }
-    });
+    const product = await this.productRepository.
+      //sum rating
+      createQueryBuilder("product")
+      .leftJoinAndSelect("product.ratings", "ratings")
+      .leftJoinAndSelect("product.category", "category")
+      .select('ROUND(AVG(ratings.rating),2)', "rating")
+      .addSelect("product.id", "id")
+      .addSelect("product.name", "name")
+      .addSelect("product.price", "price")
+      .addSelect("product.salePrice", "salePrice")
+      .addSelect("product.saleStartDate", "saleStartDate")
+      .addSelect("product.saleEndDate", "saleEndDate")
+      .addSelect("product.quantity", "quantity")
+      .addSelect("product.images", "images")
+      .addSelect("product.inventory", "inventory")
+      .addSelect("product.status", "status")
+      .addSelect("product.approveStatus", "approveStatus")
+      .addSelect("product.description", "description")
+      .addSelect("product.createdAt", "createdAt")
+      .addSelect("product.updatedAt", "updatedAt")
+      .groupBy("product.id")
+      .where('product.id = :id', { id })
+      .getRawOne();
     if (!product) {
       throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
     }
@@ -74,7 +94,8 @@ export class ProductsService {
       .addSelect("product.createdAt", "createdAt")
       .addSelect("product.updatedAt", "updatedAt")
       .groupBy("product.id")
-      .where('category.id = :categoryId', { categoryId: dto.categoryId })
+      // nếu không có categoryId thì lấy tất cả
+      .where(dto.categoryId ? 'product.category.id = :categoryId' : '1=1', { categoryId: dto.categoryId })
       // .andWhere('product.approveStatus = :approveStatus', { approveStatus: ApproveStatus.APPROVED })
       .skip(pagination.skip)
       .take(pagination.take)
