@@ -46,3 +46,6 @@ roles
   .updateAny("products")
   .deleteAny("products");
 
+// loại bỏ truy cập vào resource product-rating với role là admin và shop
+roles.deny(UserRole.ADMIN).createAny('product-rating');
+roles.deny(UserRole.SHOP).createAny('product-rating');
