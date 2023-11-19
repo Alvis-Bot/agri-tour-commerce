@@ -1,8 +1,7 @@
-import { IsNotEmpty } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-
-export class ProductRatingCreateDto{
+export class ProductRatingCreateDto {
   @IsNotEmpty()
   @ApiProperty()
   productId: number;
@@ -10,5 +9,4 @@ export class ProductRatingCreateDto{
   @IsNotEmpty()
   @ApiProperty()
   rating: number;
-
 }

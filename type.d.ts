@@ -1,5 +1,5 @@
-declare namespace NodeJS{
-  export interface ProcessEnv{
+declare namespace NodeJS {
+  export interface ProcessEnv {
     NODE_ENV: string;
     PORT: string;
     DB_HOST: string;
@@ -10,7 +10,5 @@ declare namespace NodeJS{
     UPLOAD_LOCATION: string;
     MAX_FILE_COUNTS: string;
     MAX_FILE_SIZE: string;
-
-
   }
 }

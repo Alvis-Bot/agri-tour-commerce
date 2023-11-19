@@ -1,23 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import { LoginDto } from "@/users/dto/login.dto";
-import { User } from "@/common/entities/user.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { UserUpdateDto } from "@/users/dto/user-update.dto";
-import { RegionsService } from "@/regions/regions.service";
-import { ApiException } from "@/exception/api.exception";
-import { ErrorMessages } from "@/exception/error.code";
-import { UserRole } from "@/auth/role.builder";
+import { Injectable } from '@nestjs/common';
+import { LoginDto } from '@/users/dto/login.dto';
+import { User } from '@/common/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserUpdateDto } from '@/users/dto/user-update.dto';
+import { RegionsService } from '@/regions/regions.service';
+import { ApiException } from '@/exception/api.exception';
+import { ErrorMessages } from '@/exception/error.code';
+import { UserRole } from '@/auth/role.builder';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly regionsService: RegionsService,
-  ) {
-  }
+  ) {}
 
   async updateFcmToken(dto: LoginDto, user: User) {
     // const fcmTokens = user.fcmTokens || [];
@@ -26,14 +24,13 @@ export class UsersService {
     // }
     // user.fcmTokens = fcmTokens; // Cập nhật mảng fcmTokens trong đối tượng user
     return await this.userRepository.save(user);
-
   }
 
   async findOneByPhone(phone: string) {
     return await this.userRepository.findOne({
       where: {
-        phone
-      }
+        phone,
+      },
     });
   }
 
@@ -43,12 +40,16 @@ export class UsersService {
   }
 
   async updateAccount(dto: UserUpdateDto, user: User) {
-    const province = await this.regionsService.getProvinceByCode(dto.provinceCode);
-    if (!province) throw new ApiException(ErrorMessages.PROVINCE_NOT_FOUND)
-    const district = await this.regionsService.getDistrictByCode(dto.districtCode);
-    if (!district) throw new ApiException(ErrorMessages.DISTRICT_NOT_FOUND)
+    const province = await this.regionsService.getProvinceByCode(
+      dto.provinceCode,
+    );
+    if (!province) throw new ApiException(ErrorMessages.PROVINCE_NOT_FOUND);
+    const district = await this.regionsService.getDistrictByCode(
+      dto.districtCode,
+    );
+    if (!district) throw new ApiException(ErrorMessages.DISTRICT_NOT_FOUND);
     const ward = await this.regionsService.getWardByCode(dto.wardCode);
-    if (!ward) throw new ApiException(ErrorMessages.WARD_NOT_FOUND)
+    if (!ward) throw new ApiException(ErrorMessages.WARD_NOT_FOUND);
 
     return await this.userRepository.save({
       ...user,
@@ -74,25 +75,21 @@ export class UsersService {
       ...user,
       roles: role,
     });
-
   }
 
   async getUserById(id: number) {
     return await this.userRepository.findOne({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
   async findOneByUid(uid: string) {
     return await this.userRepository.findOne({
       where: {
-        uid
-      }
+        uid,
+      },
     });
-
   }
-
-
 }

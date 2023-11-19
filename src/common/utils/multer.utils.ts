@@ -1,19 +1,18 @@
-import { UploadTypesEnum } from "@/common/enums/upload-types.enum";
-import { HttpException, HttpStatus } from "@nestjs/common";
-import { extname ,  } from 'path';
+import { UploadTypesEnum } from '@/common/enums/upload-types.enum';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
+import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
-import { diskStorage } from "multer";
-import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
-import * as fs from "fs";
-import * as process from "process";
+import { diskStorage } from 'multer';
+import * as process from 'process';
 
-export class MulterUtils{
+export class MulterUtils {
   /**
    * Config for allowed files
    *
    * @static
-   * @param {UploadTypesEnum} filesAllowed
+   * @param {UploadTypesEnum} filesAllowed - Allowed files
    * @returns
    * @memberof MulterUtils
    */
@@ -31,7 +30,13 @@ export class MulterUtils{
           cb(null, true);
         } else {
           // Reject file
-          cb(new HttpException(`Unsupported file type ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
+          cb(
+            new HttpException(
+              `Unsupported file type ${extname(file.originalname)}`,
+              HttpStatus.BAD_REQUEST,
+            ),
+            false,
+          );
         }
       },
       // Storage properties
@@ -48,10 +53,10 @@ export class MulterUtils{
         filename: (req: any, file: any, cb: any) => {
           // Calling the callback passing the random name generated with
           // the original extension name
-          cb(null, `${uuid()}.${extname(file.originalname).split(".").pop()}`);
+          cb(null, `${uuid()}.${extname(file.originalname).split('.').pop()}`);
         },
       }),
-    }
+    };
   }
 
   static deleteFile(image: string) {

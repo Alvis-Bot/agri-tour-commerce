@@ -1,17 +1,15 @@
-import { IoAdapter } from "@nestjs/platform-socket.io";
-import { User } from "@/common/entities/user.entity";
-import { Socket } from "socket.io";
-import { INestApplicationContext } from "@nestjs/common";
-import { UsersService } from "@/users/users.service";
-import { auth } from "firebase-admin";
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { User } from '@/common/entities/user.entity';
+import { Socket } from 'socket.io';
+import { INestApplicationContext } from '@nestjs/common';
+import { UsersService } from '@/users/users.service';
+import { auth } from 'firebase-admin';
 
 export interface AuthenticatedSocket extends Socket {
   user: User;
 }
 
-
 export class WebsocketAdapter extends IoAdapter {
-
   private usersService: UsersService;
 
   constructor(private app: INestApplicationContext) {

@@ -1,10 +1,9 @@
-import { HttpException } from "@nestjs/common";
+import { HttpException } from '@nestjs/common';
 
 export interface IError {
   status: number;
   message: string;
 }
-
 
 export class ApiException extends HttpException {
   constructor(error: IError, message?: string) {

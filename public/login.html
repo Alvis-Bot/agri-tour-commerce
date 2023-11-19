@@ -2,10 +2,10 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
   <title>Login</title>
 </head>
-<link rel="stylesheet" media="all" href="./styles.css?v=1.0.6" />
+<link href="./styles.css?v=1.0.6" media="all" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-app.js"></script>
 
@@ -1171,26 +1171,28 @@
                       </div>
                     </div>
                   </div>
-                  <input id="input-phone" tabindex="1" type="tel" name="phone_num" maxlength="10" autocomplete="off"
-                         placeholder="Phone number" class="input">
+                  <input autocomplete="off" class="input" id="input-phone" maxlength="10" name="phone_num"
+                         placeholder="Phone number"
+                         tabindex="1" type="tel">
                 </div>
                 <div class="confirm-code line-form has-ico">
                   <div><i class="fa fa-link"></i>
                   </div>
-                  <input maxlength="6" id="input-code" tabindex="1" type="tel" name="phone_num" autocomplete="off"
-                         placeholder="Confirm code" class="input">
+                  <input autocomplete="off" class="input" id="input-code" maxlength="6" name="phone_num"
+                         placeholder="Confirm code"
+                         tabindex="1" type="tel">
                 </div>
-                <div id="recaptcha-container" class="captcha login-item"></div>
+                <div class="captcha login-item" id="recaptcha-container"></div>
                 <div class="space"></div>
                 <div class="small">
-                  <input type="checkbox" id="confirm" checked name="confirm" value="confirm">
+                  <input checked id="confirm" name="confirm" type="checkbox" value="confirm">
                   Agree to <a href="https://thomi.com.vn/thomi-terms-of-service/">Terms of Service</a>, <a
                   href="https://thomi.com.vn/thomi-privacy-policy/">Privacy Policy</a>
                 </div>
                 <div class="space"></div>
-                <button id="confirm-code" class="confirm-code btn btn--m first">Sign In</button>
+                <button class="confirm-code btn btn--m first" id="confirm-code">Sign In</button>
                 <div class="login-item">
-                  <button id="phone-login" class="btn btn--m block first" disabled>Sign In</button>
+                  <button class="btn btn--m block first" disabled id="phone-login">Sign In</button>
                 </div>
                 <div class="space"></div>
                 <div class="space"></div>

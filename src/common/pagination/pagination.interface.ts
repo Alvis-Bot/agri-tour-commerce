@@ -1,6 +1,6 @@
-import { Pagination } from "./pagination.dto";
+import { Pagination } from './pagination.dto';
 
 export interface IPagination {
-	pagination: Pagination;
-	itemCount: number;
+  pagination: Pagination;
+  itemCount: number;
 }

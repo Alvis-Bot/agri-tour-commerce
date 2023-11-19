@@ -1,7 +1,10 @@
-import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway } from "@nestjs/websockets";
-import { AuthenticatedSocket } from "@/gateway/gateway.adapter";
-import { GatewaySessionManager } from "@/gateway/gateway.session";
-
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  WebSocketGateway,
+} from '@nestjs/websockets';
+import { AuthenticatedSocket } from '@/gateway/gateway.adapter';
+import { GatewaySessionManager } from '@/gateway/gateway.session';
 
 @WebSocketGateway({
   cors: {
@@ -14,12 +17,7 @@ import { GatewaySessionManager } from "@/gateway/gateway.session";
 export class MessagingGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-
-  constructor(
-    private readonly session: GatewaySessionManager
-  ) {}
-
-
+  constructor(private readonly session: GatewaySessionManager) {}
 
   handleConnection(client: AuthenticatedSocket, ...args: any[]): any {
     console.log('connected');
@@ -34,5 +32,4 @@ export class MessagingGateway
     }
     console.log(this.session.getSockets());
   }
-
 }

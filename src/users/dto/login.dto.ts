@@ -1,11 +1,9 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
-
-export class LoginDto{
+export class LoginDto {
   @IsString()
   @IsOptional()
   @ApiPropertyOptional()
   fcmToken?: string;
-
 }

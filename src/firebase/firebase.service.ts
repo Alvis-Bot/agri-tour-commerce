@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { initializeApp, getApps, App, cert } from "firebase-admin/app";
-import { getAuth, Auth, DecodedIdToken } from "firebase-admin/auth";
-import { getFirestore, Firestore } from 'firebase-admin/firestore';
+import { App, cert, getApps, initializeApp } from 'firebase-admin/app';
+import { Auth, getAuth } from 'firebase-admin/auth';
+import { Firestore, getFirestore } from 'firebase-admin/firestore';
 import { getStorage, Storage } from 'firebase-admin/storage';
-import { getMessaging, Messaging } from "firebase-admin/messaging";
-import  { join } from 'path';
+import { getMessaging, Messaging } from 'firebase-admin/messaging';
+import { join } from 'path';
 import { readFileSync } from 'fs';
+
 @Injectable()
 export class FirebaseService {
   public readonly app: App;
@@ -18,9 +19,14 @@ export class FirebaseService {
   constructor(private readonly configService: ConfigService) {
     if (!this.app && getApps().length === 0) {
       this.app = initializeApp({
-        credential : cert(JSON.parse(
-          readFileSync(join(__dirname, '..', '..', 'serviceAccountKey.json'), 'utf8')
-        )),
+        credential: cert(
+          JSON.parse(
+            readFileSync(
+              join(__dirname, '..', '..', 'serviceAccountKey.json'),
+              'utf8',
+            ),
+          ),
+        ),
       });
     } else {
       this.app = getApps()[0];
@@ -31,5 +37,4 @@ export class FirebaseService {
     this.storage = getStorage(this.app);
     this.messaging = getMessaging(this.app);
   }
-
 }

@@ -1,8 +1,17 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, OneToMany, Relation } from "typeorm";
-import { AdministrativeUnit } from "./administrative-unit.entity";
-import { Ward } from "./ward.entity";
-import { Province } from "@/common/entities/province.entity";
-@Entity({ name: 'districts'})
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
+import { AdministrativeUnit } from './administrative-unit.entity';
+import { Ward } from './ward.entity';
+import { Province } from '@/common/entities/province.entity';
+
+@Entity({ name: 'districts' })
 export class District {
   @PrimaryColumn()
   code: string;
@@ -28,9 +37,8 @@ export class District {
 
   @ManyToOne(() => Province)
   @JoinColumn({ name: 'province_code' })
-  province: Relation<Province>
+  province: Relation<Province>;
 
-
-  @OneToMany(() => Ward, ward => ward.district)
+  @OneToMany(() => Ward, (ward) => ward.district)
   wards: Ward[];
 }

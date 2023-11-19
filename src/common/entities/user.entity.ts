@@ -1,20 +1,27 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
-import { Province } from "@/common/entities/province.entity";
-import { District } from "@/common/entities/district.entity";
-import { Ward } from "@/common/entities/ward.entity";
-import { Shop } from "@/common/entities/shop.entity";
-import { UserRole } from "@/auth/role.builder";
-import { Order } from "@/common/entities/order.entity";
-import { ProductRatingEntity } from "@/common/entities/product-rating.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
+import { Province } from '@/common/entities/province.entity';
+import { District } from '@/common/entities/district.entity';
+import { Ward } from '@/common/entities/ward.entity';
+import { Shop } from '@/common/entities/shop.entity';
+import { UserRole } from '@/auth/role.builder';
+import { Order } from '@/common/entities/order.entity';
+import { ProductRatingEntity } from '@/common/entities/product-rating.entity';
 
-
-@Entity("users")
+@Entity('users')
 export class User {
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true  , name: 'full_name' })
+  @Column({ nullable: true, name: 'full_name' })
   fullName: string;
 
   @Column({ nullable: true, unique: true })
@@ -29,35 +36,36 @@ export class User {
   @Column({ nullable: false })
   provider: string;
 
-  @Column({ type : 'enum' , enum: UserRole, default: UserRole.USER})
-  roles:UserRole;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  roles: UserRole;
 
   @Column({ nullable: false, default: true })
   isNew: boolean;
 
   @ManyToOne(() => Province)
-  @JoinColumn({ name: "province_code" })
+  @JoinColumn({ name: 'province_code' })
   province: Relation<Province>;
 
   @ManyToOne(() => District)
-  @JoinColumn({ name: "district_code" })
+  @JoinColumn({ name: 'district_code' })
   district: Relation<District>;
 
   @ManyToOne(() => Ward)
-  @JoinColumn({ name: "ward_code" })
+  @JoinColumn({ name: 'ward_code' })
   ward: Relation<Ward>;
 
   @OneToOne(() => Shop, (shop) => shop.user, {
-    onDelete: 'CASCADE',
-    lazy: true,
+    onDelete: 'CASCADE', // delete user nó sẽ xóa luôn shop
+    lazy: true, // tải shop khi cần thiết
   })
-  @JoinColumn({ name: "shop_id" })
-  shop: Relation<Shop>;
+  @JoinColumn({ name: 'shop_id' })
+  shop: Partial<Shop>;
 
-  @OneToMany(() => Order, order => order.user, { cascade: true })
+  @OneToMany(() => Order, (order) => order.user, { cascade: true })
   orders: Order[];
 
-  @OneToMany(() => ProductRatingEntity, ratings => ratings.user, { cascade: true })
+  @OneToMany(() => ProductRatingEntity, (ratings) => ratings.user, {
+    cascade: true,
+  })
   ratings: ProductRatingEntity[];
-
 }

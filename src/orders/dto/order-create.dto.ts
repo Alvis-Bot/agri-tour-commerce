@@ -1,15 +1,19 @@
-import { IsArray, ArrayMinSize, IsInt, Min, IsPositive, ValidateNested } from "class-validator";
-import { Type } from 'class-transformer';
-import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayMinSize,
+  IsArray,
+  IsInt,
+  IsPositive,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderDetailCreateDto {
-
   @ApiProperty()
   @IsInt()
   @Min(1)
   @IsPositive()
   productId: number;
-
 
   @ApiProperty()
   @IsInt()
@@ -19,7 +23,6 @@ export class OrderDetailCreateDto {
 }
 
 export class OrderCreateDto {
-
   @ApiProperty({ type: [OrderDetailCreateDto] })
   @IsArray()
   @ArrayMinSize(1)

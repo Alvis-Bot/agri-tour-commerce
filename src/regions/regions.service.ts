@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Province } from "@/common/entities/province.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { District } from "@/common/entities/district.entity";
-import { Ward } from "@/common/entities/ward.entity";
-import { Pagination } from "@/common/pagination/pagination.dto";
-import { Meta } from "@/common/pagination/meta.dto";
-import { PaginationModel } from "@/common/pagination/pagination.model";
+import { Province } from '@/common/entities/province.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { District } from '@/common/entities/district.entity';
+import { Ward } from '@/common/entities/ward.entity';
+import { Pagination } from '@/common/pagination/pagination.dto';
+import { Meta } from '@/common/pagination/meta.dto';
+import { PaginationModel } from '@/common/pagination/pagination.model';
 
 @Injectable()
 export class RegionsService {
@@ -18,9 +18,10 @@ export class RegionsService {
     @InjectRepository(Ward)
     private readonly wardRepository: Repository<Ward>,
   ) {}
+
   async getProvinces() {
-    return await this.provinceRepository.
-    createQueryBuilder('province')
+    return await this.provinceRepository
+      .createQueryBuilder('province')
       // xắp xếp theo tên tỉnh
       .orderBy('province.name', 'ASC')
       // lấy ra các trường cần thiết
@@ -86,21 +87,20 @@ export class RegionsService {
       .getMany();
   }
 
-  async getWards(pagination: Pagination) : Promise<PaginationModel<District>> {
-    const queryBuilder =  this.districtRepository
+  async getWards(pagination: Pagination): Promise<PaginationModel<District>> {
+    const queryBuilder = this.districtRepository
       .createQueryBuilder('district')
       .take(pagination.take)
       .skip(pagination.skip)
       // xắp xếp theo tên quận huyện
-      .orderBy('district.name', 'ASC')
-      // lấy ra các trường cần thiết
-      // .select(['district.code', 'district.name', 'district.nameEn'])
+      .orderBy('district.name', 'ASC');
+    // lấy ra các trường cần thiết
+    // .select(['district.code', 'district.name', 'district.nameEn'])
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
     const meta = new Meta({ itemCount, pagination });
     return new PaginationModel(entities, meta);
-
   }
 
   async getWardsByDistrictCode(code: string) {

@@ -1,12 +1,8 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
-
-export class ProductQueryDto{
-
+export class ProductQueryDto {
   @ApiPropertyOptional()
   @IsOptional()
   categoryId?: number;
-
-
 }

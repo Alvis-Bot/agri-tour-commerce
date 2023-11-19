@@ -1,7 +1,7 @@
-import { IsString, IsNumber, IsBoolean, IsArray, IsDate, Max, IsEnum } from "class-validator";
-import { Transform, Type } from "class-transformer";
-import { ApiProperty } from "@nestjs/swagger";
-import { ApproveStatus } from "@/common/enums/approve-status";
+import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { ApproveStatus } from '@/common/enums/approve-status';
 
 export class ProductCreateDto {
   @IsString()
@@ -17,18 +17,18 @@ export class ProductCreateDto {
   salePrice: number;
 
   @ApiProperty({
-    description : 'Ngày bắt đầu khuyến mãi',
+    description: 'Ngày bắt đầu khuyến mãi',
     default: new Date(),
-    type: Date
+    type: Date,
   })
- @Type(() => Date)
+  @Type(() => Date)
   @Transform(({ value }) => new Date(value))
   saleStartDate: Date;
 
   @ApiProperty({
     type: Date,
     default: new Date(),
-    description : 'Ngày kết thúc khuyến mãi',
+    description: 'Ngày kết thúc khuyến mãi',
   })
   @Type(() => Date)
   @Transform(({ value }) => new Date(value))
@@ -57,15 +57,15 @@ export class ProductCreateDto {
   @IsBoolean()
   @ApiProperty({
     default: true,
-    description : 'Trạng thái sản phẩm (true : đang bán , false : ngừng bán)'
+    description: 'Trạng thái sản phẩm (true : đang bán , false : ngừng bán)',
   })
   status: boolean;
 
   @IsEnum(ApproveStatus)
   @ApiProperty({
-    description : 'Trạng thái duyệt sản phẩm',
+    description: 'Trạng thái duyệt sản phẩm',
     enum: ApproveStatus,
-    default: ApproveStatus.PENDING
+    default: ApproveStatus.PENDING,
   })
   approveStatus: ApproveStatus;
 
@@ -76,7 +76,7 @@ export class ProductCreateDto {
   @IsNumber()
   @ApiProperty({
     type: Number,
-    description : 'id của danh mục sản phẩm'
+    description: 'id của danh mục sản phẩm',
   })
   categoryId: number;
 }
