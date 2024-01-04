@@ -52,12 +52,10 @@ export class ShopService {
   }
 
   async findShopByUser(myUser: User): Promise<Shop> {
-    const options: FindOneOptions<Shop> = {
-      where: {
-        user: myUser,
-      },
-    };
-    return await this.shopRepository.findOne(options);
+    return await this.shopRepository
+      .createQueryBuilder('shop')
+      .where('shop.user = :user', { user: myUser })
+      .getOne();
   }
 
   async getShopById(id: number): Promise<Shop> {
