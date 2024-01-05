@@ -38,6 +38,20 @@ export class FirebaseAuthStrategy extends PassportStrategy(Strategy) {
             provider: decodedIdToken.firebase.sign_in_provider,
           }))
         );
+      case 'password':
+        // nếu user không có trong db thì tạo mới
+        const userByEmail = await this.usersService.findOneByEmail(
+          decodedIdToken.email,
+        );
+        return (
+          userByEmail ||
+          (await this.usersService.createBaseUser({
+            email: decodedIdToken.email,
+            uid: decodedIdToken.uid,
+            provider: decodedIdToken.firebase.sign_in_provider,
+          }))
+        );
+
       default:
         throw new UnauthorizedException();
     }
