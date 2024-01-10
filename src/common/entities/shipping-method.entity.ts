@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Relation,
-} from 'typeorm';
-import { Shop } from '@/common/entities/shop.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'shipping_methods' })
 export class ShippingMethod {
@@ -17,7 +10,4 @@ export class ShippingMethod {
 
   @Column({ nullable: true, name: 'description' })
   description: string;
-
-  @ManyToOne(() => Shop, (shop) => shop.shippingMethods)
-  shop: Relation<Shop>;
 }

@@ -2,6 +2,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -12,10 +14,10 @@ import { BusinessType } from '@/common/enums/business-type';
 import { User } from '@/common/entities/user.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
 import { Product } from '@/common/entities/product.entity';
-import { ShippingMethod } from '@/common/entities/shipping-method.entity';
 import { Province } from '@/common/entities/province.entity';
 import { District } from '@/common/entities/district.entity';
 import { Ward } from '@/common/entities/ward.entity';
+import { ShippingMethod } from '@/common/entities/shipping-method.entity';
 
 @Entity('shops')
 export class Shop extends AuditEntity {
@@ -71,11 +73,21 @@ export class Shop extends AuditEntity {
   @Column({ nullable: false, name: 'step', default: 1 })
   step: number;
 
+  @Column({ nullable: true, name: 'business_license' })
+  businessLicense: string;
+
+  @Column({ nullable: true, name: 'identity' })
+  identity: string;
+
+  @Column({ nullable: true, name: 'avatar' })
+  avatar: string;
+
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: Partial<User>;
 
-  @OneToMany(() => ShippingMethod, (method) => method.shop)
+  @ManyToMany(() => ShippingMethod)
+  @JoinTable()
   shippingMethods: ShippingMethod[];
 
   //một shop có nhiều sản phẩm

@@ -22,15 +22,35 @@ export class ShopService {
     private readonly usersService: UsersService,
   ) {}
 
-  async createShop(dto: ShopCreateDto, myUser: User): Promise<Shop> {
+  async createShop(
+    dto: ShopCreateDto,
+    myUser: User,
+    files: {
+      businessLicense: Express.Multer.File[];
+      identity: Express.Multer.File[];
+      avatar: Express.Multer.File[];
+    },
+  ): Promise<Shop> {
+    console.log(files.businessLicense[0]);
     const myShop = await this.selectOneShopByUserId(myUser.id);
     console.log(myShop);
     if (myShop) {
       throw new ApiException(ErrorMessages.SHOP_ALREADY_EXISTS);
     }
+
+    const shippingMethod = await Promise.all(
+      dto.shippingMethodIds.map((id) =>
+        this.shippingMethodsService.getShippingMethodById(Number(id)),
+      ),
+    );
+
     const createdShop = this.shopRepository.create({
       ...dto,
       user: myUser,
+      shippingMethods: shippingMethod,
+      businessLicense: files.businessLicense[0].filename,
+      identity: files.identity[0].filename,
+      avatar: files.avatar[0].filename,
     });
     // cập nhật lại quyền cho user từ USER -> SHOP
     await this.usersService.updateRole(myUser, UserRole.SHOP);

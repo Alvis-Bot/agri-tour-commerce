@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFiles,
+  UseGuards,
+} from '@nestjs/common';
 import { Routers } from '@/common/enums/routers';
 import { ShopService } from '@/shop/shop.service';
 import { Note } from '@/common/decorator/note.decorator';
@@ -11,6 +19,8 @@ import { ACGuard, UseRoles } from 'nest-access-control';
 import { Public } from '@/common/decorator/public.meta';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiFileFields } from '@/common/decorator/file.decorator';
+import { MulterUtils } from '@/common/utils/multer.utils';
+import { UploadTypesEnum } from '@/common/enums/upload-types.enum';
 
 @Controller(Routers.SHOP)
 @UseGuards(FirebaseAuthGuard, ACGuard)
@@ -24,17 +34,30 @@ export class ShopController {
     action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
     possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào shop của chính mình
   })
-  @ApiFileFields([
-    // gấu phép khinh doanh
-    { name: 'businessLicense', maxCount: 1 },
-    // cmnd/cccd
-    { name: 'identity', maxCount: 1 },
-    // hình ảnh đại diện kèm cccd
-    { name: 'avatar', maxCount: 1 },
-  ])
+  @ApiFileFields(
+    [
+      // gấu phép khinh doanh
+      { name: 'businessLicense', maxCount: 1 },
+      // cmnd/cccd
+      { name: 'identity', maxCount: 1 },
+      // hình ảnh đại diện kèm cccd
+      { name: 'avatar', maxCount: 1 },
+    ],
+    MulterUtils.getConfig(UploadTypesEnum.ANY),
+  )
   @Note('Tạo mới shop (user)')
-  async createShop(@AuthUser() myUser: User, @Body() dto: ShopCreateDto) {
-    return await this.shopService.createShop(dto, myUser);
+  async createShop(
+    @UploadedFiles()
+    files: {
+      businessLicense: Express.Multer.File[];
+      identity: Express.Multer.File[];
+      avatar: Express.Multer.File[];
+    },
+    @AuthUser() myUser: User,
+    @Body() dto: ShopCreateDto,
+  ) {
+    console.log(dto);
+    return await this.shopService.createShop(dto, myUser, files);
   }
 
   // @Post('step/:step')

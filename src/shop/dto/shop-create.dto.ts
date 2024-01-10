@@ -1,6 +1,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { BusinessType } from '@/common/enums/business-type';
+import { Transform } from 'class-transformer';
 
 export class ShopCreateDto {
   @IsNotEmpty()
@@ -24,9 +25,14 @@ export class ShopCreateDto {
   @ApiProperty()
   phone: string;
 
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  taxCode: string;
+
   // step 2
   @ApiProperty()
-  // phuong thuc van chuyen
+  @Transform(({ value }) => value.split(',').map((id: string) => Number(id)))
   shippingMethodIds: number[];
 
   //step 3
