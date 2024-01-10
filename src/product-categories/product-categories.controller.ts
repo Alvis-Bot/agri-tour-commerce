@@ -17,7 +17,8 @@ import { ProductCategoryCreate } from '@/product-categories/dto/product-category
 import { Note } from '@/common/decorator/note.decorator';
 import { ShopService } from '@/shop/shop.service';
 import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
-import { ACGuard, UseRoles } from 'nest-access-control';
+import { ACGuard } from 'nest-access-control';
+import { Public } from '@/common/decorator/public.meta';
 
 @Controller('product-categories')
 @ApiTags('APIs for product categories - API danh mục sản phẩm')
@@ -29,11 +30,12 @@ export class ProductCategoriesController {
   ) {}
 
   @Post()
-  @UseRoles({
-    resource: 'product-categories', // 👈 resource
-    action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-  })
+  // @UseRoles({
+  //   resource: 'product-categories', // 👈 resource
+  //   action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
+  //   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
+  // })
+  @Public()
   @Note('Tạo mới danh mục sản phẩm')
   @ApiFile('image', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
   async create(
@@ -48,22 +50,27 @@ export class ProductCategoriesController {
   }
 
   @Get()
-  @UseRoles({
-    resource: 'product-categories', // 👈 resource
-    action: 'read', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-  })
+  @Public()
+
+  // @Public()
+  // @UseRoles({
+  //   resource: 'product-categories', // 👈 resource
+  //   action: 'read', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
+  //   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
+  // })
   @Note('Lấy danh sách danh mục sản phẩm theo shop')
   async getProductCategories() {
     return await this.productCategoriesService.getProductCategories();
   }
 
   @Delete(':id')
-  @UseRoles({
-    resource: 'product-categories', // 👈 resource
-    action: 'delete', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-  })
+  @Public()
+
+  // @UseRoles({
+  //   resource: 'product-categories', // 👈 resource
+  //   action: 'delete', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
+  //   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
+  // })
   @Note('Xóa danh mục sản phẩm')
   async deleteProductCategories(@Param('id') id: number) {
     return await this.productCategoriesService.deleteProductCategories(id);
