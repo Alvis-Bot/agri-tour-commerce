@@ -4,6 +4,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Note } from '@/common/decorator/note.decorator';
 import { ACGuard, UseRoles } from 'nest-access-control';
 import { AuthUser } from '@/common/decorator/user.decorator';
+import { Pagination } from '@/common/pagination/pagination.dto';
+import { Public } from '@/common/decorator/public.meta';
 
 interface AuthRequest {
   user: User;
@@ -60,4 +63,15 @@ export class UsersController {
   async getAccount(@AuthUser() user: User) {
     return await this.usersService.getAccount(user);
   }
+
+
+  @Get('')
+  @Public()
+  @Note('Lấy danh sách tài khoản')
+  async getUsersWithPagination(
+    @Query() pagination: Pagination,
+  ) {
+    return await this.usersService.getUsersWithPagination(pagination);
+  }
+
 }

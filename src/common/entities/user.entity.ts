@@ -15,9 +15,10 @@ import { Shop } from '@/common/entities/shop.entity';
 import { UserRole } from '@/auth/role.builder';
 import { Order } from '@/common/entities/order.entity';
 import { ProductRatingEntity } from '@/common/entities/product-rating.entity';
+import { AuditEntity } from '@/common/entities/audit.entity';
 
 @Entity('users')
-export class User {
+export class User extends AuditEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

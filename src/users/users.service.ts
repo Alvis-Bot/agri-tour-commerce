@@ -8,6 +8,9 @@ import { RegionsService } from '@/regions/regions.service';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
 import { UserRole } from '@/auth/role.builder';
+import { Meta } from '@/common/pagination/meta.dto';
+import { PaginationModel } from '@/common/pagination/pagination.model';
+import { Pagination } from '@/common/pagination/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -99,5 +102,23 @@ export class UsersService {
         email,
       },
     });
+  }
+
+  async getUsersWithPagination(pagination: Pagination) {
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .take(pagination.take)
+      .skip(pagination.skip)
+      .leftJoinAndSelect('user.province', 'province')
+      .leftJoinAndSelect('user.district', 'district')
+      .leftJoinAndSelect('user.ward', 'ward')
+      // trừ ADMIN
+      // .where('user.roles != :role', { role: UserRole.ADMIN })
+      .orderBy('user.createdAt', pagination.order);
+
+    const itemCount = await this.userRepository.count();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const meta = new Meta({ itemCount, pagination });
+    return new PaginationModel(entities, meta);
   }
 }
