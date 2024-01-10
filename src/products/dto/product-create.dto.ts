@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ApproveStatus } from '@/common/enums/approve-status';
@@ -8,11 +8,11 @@ export class ProductCreateDto {
   @ApiProperty()
   name: string;
 
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty()
   price: number;
 
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty()
   salePrice: number;
 
@@ -34,7 +34,7 @@ export class ProductCreateDto {
   @Transform(({ value }) => new Date(value))
   saleEndDate: Date;
 
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty()
   quantity: number;
 
@@ -50,11 +50,11 @@ export class ProductCreateDto {
   })
   images: Express.Multer.File[];
 
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty()
   inventory: number;
 
-  @IsBoolean()
+  // @IsBoolean()
   @ApiProperty({
     default: true,
     description: 'Trạng thái sản phẩm (true : đang bán , false : ngừng bán)',
@@ -73,7 +73,7 @@ export class ProductCreateDto {
   @ApiProperty()
   description: string;
 
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
     type: Number,
     description: 'id của danh mục sản phẩm',

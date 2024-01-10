@@ -10,6 +10,7 @@ import { Pagination } from '@/common/pagination/pagination.dto';
 import { ACGuard, UseRoles } from 'nest-access-control';
 import { Public } from '@/common/decorator/public.meta';
 import { ApiTags } from '@nestjs/swagger';
+import { ApiFileFields } from '@/common/decorator/file.decorator';
 
 @Controller(Routers.SHOP)
 @UseGuards(FirebaseAuthGuard, ACGuard)
@@ -23,10 +24,41 @@ export class ShopController {
     action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
     possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào shop của chính mình
   })
+  @ApiFileFields([
+    // gấu phép khinh doanh
+    { name: 'businessLicense', maxCount: 1 },
+    // cmnd/cccd
+    { name: 'identity', maxCount: 1 },
+    // hình ảnh đại diện kèm cccd
+    { name: 'avatar', maxCount: 1 },
+  ])
   @Note('Tạo mới shop (user)')
   async createShop(@AuthUser() myUser: User, @Body() dto: ShopCreateDto) {
     return await this.shopService.createShop(dto, myUser);
   }
+
+  // @Post('step/:step')
+  // @UseRoles({
+  //   resource: 'shop', // 👈 resource
+  //   action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
+  //   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào shop của chính mình
+  // })
+  // @ApiFileFields([
+  //   // gấu phép khinh doanh
+  //   { name: 'businessLicense', maxCount: 1 },
+  //   // cmnd/cccd
+  //   { name: 'identity', maxCount: 1 },
+  //   // hình ảnh đại diện kèm cccd
+  //   { name: 'avatar', maxCount: 1 },
+  // ])
+  // @Note('Tạo mới shop theo từng bước (user)')
+  // async updateShopStep(
+  //   @Param('step') step: number,
+  //   @AuthUser() myUser: User,
+  //   @Body() dto: ShopUpdateDto,
+  // ) {
+  //   return await this.shopService.updateShopStep(step, dto, myUser);
+  // }
 
   @Get('me')
   @UseRoles({

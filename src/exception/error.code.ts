@@ -33,4 +33,13 @@ export const ErrorMessages = {
     HttpStatus.CONFLICT,
     'Product rating existed',
   ),
+  SHIPPING_METHOD_NOT_FOUND: errorFactory(
+    HttpStatus.NOT_FOUND,
+    'Shipping method not found',
+  ),
+  SHOP_STEP_NOT_FOUND: errorFactory(
+    HttpStatus.NOT_FOUND,
+    'Shop step not found',
+  ),
+
 };

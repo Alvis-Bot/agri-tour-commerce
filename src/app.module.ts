@@ -15,6 +15,7 @@ import { ProductsModule } from './products/products.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductRatingModule } from './product-rating/product-rating.module';
+import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 
 console.log(process.env.DB_PASSWORD);
 
@@ -60,6 +61,7 @@ console.log(process.env.DB_PASSWORD);
     GatewayModule,
     OrdersModule,
     ProductRatingModule,
+    ShippingMethodsModule,
   ],
 })
 export class AppModule {}

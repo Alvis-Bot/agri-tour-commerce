@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ShopCreateDto } from '@/shop/dto/shop-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Shop } from '@/common/entities/shop.entity';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '@/common/entities/user.entity';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
@@ -11,24 +11,23 @@ import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
 import { UsersService } from '@/users/users.service';
 import { UserRole } from '@/auth/role.builder';
-import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { ShippingMethodsService } from '@/shipping-methods/shipping-methods.service';
 
 @Injectable()
 export class ShopService {
   constructor(
     @InjectRepository(Shop)
     private readonly shopRepository: Repository<Shop>,
+    private readonly shippingMethodsService: ShippingMethodsService,
     private readonly usersService: UsersService,
   ) {}
 
   async createShop(dto: ShopCreateDto, myUser: User): Promise<Shop> {
-    const myShop = await this.findShopByUser(myUser);
-
+    const myShop = await this.selectOneShopByUserId(myUser.id);
+    console.log(myShop);
     if (myShop) {
       throw new ApiException(ErrorMessages.SHOP_ALREADY_EXISTS);
     }
-    console.log(myUser);
-
     const createdShop = this.shopRepository.create({
       ...dto,
       user: myUser,
@@ -39,22 +38,18 @@ export class ShopService {
   }
 
   async getMyShop(myUser: User): Promise<Shop> {
-    const options: FindOneOptions<Shop> = {
-      where: {
-        user: myUser,
-      } as FindOptionsWhere<Shop>,
-    };
-    const myShop = await this.shopRepository.findOne(options);
+    const myShop = await this.selectOneShopByUserId(myUser.id);
     if (!myShop) {
       throw new ApiException(ErrorMessages.SHOP_NOT_FOUND);
     }
     return myShop;
   }
 
-  async findShopByUser(myUser: User): Promise<Shop> {
+  async selectOneShopByUserId(userId: number): Promise<Shop> {
     return await this.shopRepository
       .createQueryBuilder('shop')
-      .where('shop.user = :user', { user: myUser })
+      .leftJoinAndSelect('shop.user', 'user')
+      .where('user.id = :userId', { userId })
       .getOne();
   }
 
