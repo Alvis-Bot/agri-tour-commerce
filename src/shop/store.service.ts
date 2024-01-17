@@ -48,6 +48,7 @@ export class StoreService {
 			.createQueryBuilder('store')
 			.leftJoinAndSelect('store.user', 'user')
 			.leftJoinAndSelect('store.deliveryOptions', 'deliveryOptions')
+			.leftJoinAndSelect('deliveryOptions.deliveryMethod', 'deliveryMethod')
 			.leftJoinAndSelect('store.locations', 'locations')
 			.leftJoinAndSelect('locations.province', 'province')
 			.leftJoinAndSelect('locations.district', 'district')
@@ -73,6 +74,7 @@ export class StoreService {
 			.leftJoinAndSelect('locations.ward', 'ward')
 			.leftJoinAndSelect('store.identity', 'identity')
 			.leftJoinAndSelect('store.deliveryOptions', 'deliveryOptions')
+			.leftJoinAndSelect('deliveryOptions.deliveryMethod', 'deliveryMethod')
 			.where('store.id = :id', { id })
 			.getOne();
 	}
@@ -160,6 +162,7 @@ export class StoreService {
 		const queryBuilder = this.storeRepository
 			.createQueryBuilder('store')
 			.leftJoinAndSelect('store.deliveryOptions', 'deliveryOptions')
+			.leftJoinAndSelect('deliveryOptions.deliveryMethod', 'deliveryMethod')
 			.leftJoinAndSelect('store.locations', 'locations')
 			.leftJoinAndSelect('locations.province', 'province')
 			.leftJoinAndSelect('locations.district', 'district')
