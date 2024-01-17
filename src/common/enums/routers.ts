@@ -1,7 +1,8 @@
 export enum Routers {
   USERS = 'users',
   REGIONS = 'regions',
-  SHOP = 'shop',
+  STORE = 'store',
   PRODUCTS = 'products',
   ORDERS = 'orders',
+  DELIVERY_METHODS = 'delivery-methods',
 }

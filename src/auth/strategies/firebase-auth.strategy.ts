@@ -14,6 +14,7 @@ export class FirebaseAuthStrategy extends PassportStrategy(Strategy) {
 
   async validate(token: string) {
     const decodedIdToken = await auth()
+      // không check token hết hạn
       .verifyIdToken(token, true)
       .catch((err) => {
         switch (err.code) {

@@ -1,72 +1,69 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  Relation,
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Province } from '@/common/entities/province.entity';
 import { District } from '@/common/entities/district.entity';
 import { Ward } from '@/common/entities/ward.entity';
-import { Shop } from '@/common/entities/shop.entity';
+import { Store } from '@/common/entities/store/store.entity';
 import { UserRole } from '@/auth/role.builder';
 import { Order } from '@/common/entities/order.entity';
-import { ProductRatingEntity } from '@/common/entities/product-rating.entity';
+import { ProductRatingEntity } from '@/common/entities/product/product-rating.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
 
 @Entity('users')
 export class User extends AuditEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Column({ nullable: true, name: 'full_name' })
-  fullName: string;
+	@Column({ nullable: true, name: 'full_name' })
+	fullName: string;
 
-  @Column({ nullable: true, unique: true })
-  uid: string;
+	@Column({ nullable: true, unique: true })
+	uid: string;
 
-  @Column({ nullable: true, unique: true })
-  email: string;
+	@Column({ nullable: true, unique: true })
+	email: string;
 
-  @Column({ nullable: true, unique: true })
-  phone: string;
+	@Column({ nullable: true, unique: true })
+	phone: string;
 
-  @Column({ nullable: false })
-  provider: string;
+	@Column({ nullable: false })
+	provider: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
-  roles: UserRole;
+	@Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+	roles: UserRole;
 
-  @Column({ nullable: false, default: true })
-  isNew: boolean;
+	@Column({ nullable: false, default: true })
+	isNew: boolean;
 
-  @ManyToOne(() => Province)
-  @JoinColumn({ name: 'province_code' })
-  province: Relation<Province>;
+	@ManyToOne(() => Province)
+	@JoinColumn({ name: 'province_code' })
+	province: Province;
 
-  @ManyToOne(() => District)
-  @JoinColumn({ name: 'district_code' })
-  district: Relation<District>;
+	@ManyToOne(() => District)
+	@JoinColumn({ name: 'district_code' })
+	district: District;
 
-  @ManyToOne(() => Ward)
-  @JoinColumn({ name: 'ward_code' })
-  ward: Relation<Ward>;
+	@ManyToOne(() => Ward)
+	@JoinColumn({ name: 'ward_code' })
+	ward: Ward;
 
-  @OneToOne(() => Shop, (shop) => shop.user, {
-    onDelete: 'CASCADE', // delete user nó sẽ xóa luôn shop
-    lazy: true, // tải shop khi cần thiết
-  })
-  @JoinColumn({ name: 'shop_id' })
-  shop: Partial<Shop>;
+	@OneToOne(() => Store, (store) => store.user, {
+		onDelete: 'CASCADE', // delete user nó sẽ xóa luôn store
+		lazy: true, // tải store khi cần thiết
+	})
+	@JoinColumn({ name: 'store_id' })
+	store: Store;
 
-  @OneToMany(() => Order, (order) => order.user, { cascade: true })
-  orders: Order[];
+	@OneToMany(() => Order, (order) => order.user)
+	orders: Order[];
 
-  @OneToMany(() => ProductRatingEntity, (ratings) => ratings.user, {
-    cascade: true,
-  })
-  ratings: ProductRatingEntity[];
+	@OneToMany(() => ProductRatingEntity, (ratings) => ratings.user)
+	ratings: ProductRatingEntity[];
 }

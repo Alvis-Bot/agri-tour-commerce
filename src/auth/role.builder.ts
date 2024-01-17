@@ -16,8 +16,8 @@ roles
   .readAny('product-rating')
   .createAny('product-rating')
   .updateAny('product-rating')
-  .createOwn('shop') // user có thể tạo shop cho mình
-  // SHOP : xem thông tin shop của mình , sửa thông tin shop của mình , shop tạo category , product
+  .createOwn('shop') // user có thể tạo store cho mình
+  // SHOP : xem thông tin store của mình , sửa thông tin store của mình , store tạo category , product
   .grant(UserRole.SHOP)
   .extend(UserRole.USER)
   .readOwn('shop')
@@ -29,7 +29,7 @@ roles
   .createOwn('products')
   .updateOwn('products')
   .deleteOwn('products')
-  // ADMIN : xem thông tin tất cả user , shop , category , product , sửa thông tin tất cả user , shop , category , product , xóa tất cả user , shop , category , product
+  // ADMIN : xem thông tin tất cả user , store , category , product , sửa thông tin tất cả user , store , category , product , xóa tất cả user , store , category , product
   .grant(UserRole.ADMIN)
   .extend(UserRole.SHOP)
   .readAny('users')
@@ -45,6 +45,6 @@ roles
   .updateAny('products')
   .deleteAny('products');
 
-// loại bỏ truy cập vào resource product-rating với role là admin và shop
+// loại bỏ truy cập vào resource product-rating với role là admin và store
 roles.deny(UserRole.ADMIN).createAny('product-rating');
 roles.deny(UserRole.SHOP).createAny('product-rating');

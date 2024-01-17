@@ -1,82 +1,84 @@
-import { IsEnum, IsString } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import {
+	IsBoolean,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	MaxLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ApproveStatus } from '@/common/enums/approve-status';
+import { ProductPriceCreateDto } from '@/product-prices/dto/product-price-create.dto';
 
-export class ProductCreateDto {
-  @IsString()
-  @ApiProperty()
-  name: string;
+export class ProductCreateDto extends ProductPriceCreateDto {
+	@ApiProperty({ description: 'Tên sản phẩm', example: 'Áo thun nam' })
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(80)
+	name: string;
 
-  // @IsNumber()
-  @ApiProperty()
-  price: number;
+	@ApiProperty({ description: 'Mã sản phẩm/SKU', example: 'ATN123' })
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(80)
+	sku: string;
 
-  // @IsNumber()
-  @ApiProperty()
-  salePrice: number;
+	@ApiProperty({ description: 'Khối lượng', example: '500g' })
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(80)
+	weight: string;
 
-  @ApiProperty({
-    description: 'Ngày bắt đầu khuyến mãi',
-    default: new Date(),
-    type: Date,
-  })
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value))
-  saleStartDate: Date;
+	@ApiProperty({ description: 'Mã vạch/Barcode', example: '8938505974192' })
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(80)
+	barcode: string;
 
-  @ApiProperty({
-    type: Date,
-    default: new Date(),
-    description: 'Ngày kết thúc khuyến mãi',
-  })
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value))
-  saleEndDate: Date;
+	@ApiProperty({ description: 'Đơn vị tính', example: 'Chiếc' })
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(80)
+	unit: string;
 
-  // @IsNumber()
-  @ApiProperty()
-  quantity: number;
+	@ApiProperty({
+		description: 'Mô tả sản phẩm',
+		example: 'Áo thun nam màu xanh, chất liệu cotton',
+	})
+	@IsOptional()
+	@IsString()
+	description?: string;
 
-  @ApiProperty({
-    description: 'Ảnh đại diện của sản phẩm',
-    type: 'string',
-    format: 'binary',
-    isArray: true, // Indicate that it's an array
-    items: {
-      type: 'string',
-      format: 'binary',
-    },
-  })
-  images: Express.Multer.File[];
+	@ApiProperty({
+		description: 'Chú thích',
+		example: 'Sản phẩm bán chạy nhất mùa hè',
+	})
+	@IsOptional()
+	@IsString()
+	note?: string;
 
-  // @IsNumber()
-  @ApiProperty()
-  inventory: number;
+	@ApiProperty({ description: 'Cho phép bán', example: true })
+	@IsNotEmpty()
+	@IsBoolean()
+	isAllowSale: boolean;
 
-  // @IsBoolean()
-  @ApiProperty({
-    default: true,
-    description: 'Trạng thái sản phẩm (true : đang bán , false : ngừng bán)',
-  })
-  status: boolean;
+	@ApiProperty({ description: 'Áp dụng thuế', example: false })
+	@IsNotEmpty()
+	@IsBoolean()
+	isApplyTax: boolean;
 
-  @IsEnum(ApproveStatus)
-  @ApiProperty({
-    description: 'Trạng thái duyệt sản phẩm',
-    enum: ApproveStatus,
-    default: ApproveStatus.PENDING,
-  })
-  approveStatus: ApproveStatus;
+	@ApiProperty({ description: 'ID danh mục sản phẩm', example: 1 })
+	@IsNotEmpty()
+	@IsNumber()
+	productCategoryId: number;
 
-  @IsString()
-  @ApiProperty()
-  description: string;
-
-  // @IsNumber()
-  @ApiProperty({
-    type: Number,
-    description: 'id của danh mục sản phẩm',
-  })
-  categoryId: number;
+	@ApiProperty({
+		description: 'Ảnh sản phẩm',
+		required: false,
+		type: 'string',
+		format: 'binary',
+		isArray: true,
+	})
+	@IsOptional()
+	@IsString()
+	images?: string;
 }

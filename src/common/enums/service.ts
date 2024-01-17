@@ -1,0 +1,3 @@
+export enum Service {
+  TRANSPORT_METHODS_SERVICE = 'TRANSPORT_METHODS_SERVICE',
+}

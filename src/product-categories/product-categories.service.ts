@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductCategoryCreate } from '@/product-categories/dto/product-category-create';
-import { ProductCategory } from '@/common/entities/product-category.entity';
+import { ProductCategory } from '@/common/entities/product/product-category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MulterUtils } from '@/common/utils/multer.utils';

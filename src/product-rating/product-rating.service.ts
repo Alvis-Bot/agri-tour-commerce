@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@/common/entities/user.entity';
 import { ProductRatingCreateDto } from '@/product-rating/dto/product-rating-create.dto';
-import { ProductRatingEntity } from '@/common/entities/product-rating.entity';
+import { ProductRatingEntity } from '@/common/entities/product/product-rating.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductsService } from '@/products/products.service';
-import { Product } from '@/common/entities/product.entity';
+import { Product } from '@/common/entities/product/product.entity';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
 

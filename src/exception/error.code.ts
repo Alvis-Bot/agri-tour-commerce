@@ -26,8 +26,8 @@ export const ErrorMessages = {
   PROVINCE_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'Province not found'),
   DISTRICT_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'District not found'),
   WARD_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'Ward not found'),
-  SHOP_ALREADY_EXISTS: errorFactory(HttpStatus.CONFLICT, 'Shop already exists'),
-  SHOP_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'Shop not found'),
+  STORE_ALREADY_EXISTS: errorFactory(HttpStatus.CONFLICT, 'StoreEntity already exists'),
+  STORE_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'StoreEntity not found'),
   PRODUCT_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'Product not found'),
   PRODUCT_RATING_EXIST: errorFactory(
     HttpStatus.CONFLICT,
@@ -41,5 +41,15 @@ export const ErrorMessages = {
     HttpStatus.NOT_FOUND,
     'Shop step not found',
   ),
+  STORE_STEP_INVALID: errorFactory(
+    HttpStatus.BAD_REQUEST,
+    'StoreEntity step invalid',
+  ),
+  // Product không thuộc store
+  PRODUCT_NOT_IN_STORE: errorFactory(
+    HttpStatus.BAD_REQUEST,
+    'Product not in store',
+  ),
+
 
 };

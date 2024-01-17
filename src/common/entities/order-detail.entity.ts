@@ -1,11 +1,10 @@
-import { Product } from '@/common/entities/product.entity';
+import { Product } from '@/common/entities/product/product.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Relation,
 } from 'typeorm';
 import { Order } from '@/common/entities/order.entity';
 
@@ -16,10 +15,11 @@ export class OrderDetail {
 
   @ManyToOne(() => Product)
   @JoinColumn({ name: 'product_id' })
-  product: Relation<Product>;
+  product: Product;
 
   @ManyToOne(() => Order, (order) => order.orderDetails)
-  order: Relation<Order>;
+  @JoinColumn({ name: 'order_id' })
+  order: Order;
 
   @Column()
   quantity: number;

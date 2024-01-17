@@ -2,11 +2,12 @@ import {
   ArrayMinSize,
   IsArray,
   IsInt,
+  IsOptional,
   IsPositive,
   Min,
   ValidateNested,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class OrderDetailCreateDto {
   @ApiProperty()
@@ -23,6 +24,22 @@ export class OrderDetailCreateDto {
 }
 
 export class OrderCreateDto {
+
+  
+  @ApiProperty({
+    description: 'Id của store',
+  })
+  @IsInt()
+  @Min(1)
+  @IsPositive()
+  storeId: number;
+
+  @ApiPropertyOptional({
+    description: 'Ghi chú',
+  })
+  @IsOptional()
+  note?: string;
+
   @ApiProperty({ type: [OrderDetailCreateDto] })
   @IsArray()
   @ArrayMinSize(1)

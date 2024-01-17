@@ -15,7 +15,7 @@ import { ApiFile } from '@/common/decorator/file.decorator';
 import { ProductCategoriesService } from '@/product-categories/product-categories.service';
 import { ProductCategoryCreate } from '@/product-categories/dto/product-category-create';
 import { Note } from '@/common/decorator/note.decorator';
-import { ShopService } from '@/shop/shop.service';
+import { StoreService } from '@/shop/store.service';
 import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
 import { ACGuard } from 'nest-access-control';
 import { Public } from '@/common/decorator/public.meta';
@@ -26,7 +26,7 @@ import { Public } from '@/common/decorator/public.meta';
 export class ProductCategoriesController {
   constructor(
     private readonly productCategoriesService: ProductCategoriesService,
-    private readonly shopService: ShopService,
+    private readonly shopService: StoreService,
   ) {}
 
   @Post()
@@ -58,7 +58,7 @@ export class ProductCategoriesController {
   //   action: 'read', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
   //   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
   // })
-  @Note('Lấy danh sách danh mục sản phẩm theo shop')
+  @Note('Lấy danh sách danh mục sản phẩm theo store')
   async getProductCategories() {
     return await this.productCategoriesService.getProductCategories();
   }

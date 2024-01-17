@@ -1,9 +1,9 @@
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Timestamp, UpdateDateColumn } from 'typeorm';
 
 export class AuditEntity {
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt: Timestamp;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt: Timestamp;
 }
