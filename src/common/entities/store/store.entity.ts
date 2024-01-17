@@ -14,9 +14,10 @@ import { Order } from '@/common/entities/order.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
 import { DeliveryOption } from '@/common/entities/store/delivery-option.entity';
 import { BusinessType } from '@/common/enums/business-type';
+import { AuditEntity } from '@/common/entities/audit.entity';
 
 @Entity('stores')
-export class Store {
+export class Store extends AuditEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 

@@ -161,6 +161,7 @@ export class StoreService {
 	async getShopsPaginate(pagination: Pagination) {
 		const queryBuilder = this.storeRepository
 			.createQueryBuilder('store')
+			.leftJoinAndSelect('store.user', 'user')
 			.leftJoinAndSelect('store.deliveryOptions', 'deliveryOptions')
 			.leftJoinAndSelect('deliveryOptions.deliveryMethod', 'deliveryMethod')
 			.leftJoinAndSelect('store.locations', 'locations')
@@ -168,8 +169,6 @@ export class StoreService {
 			.leftJoinAndSelect('locations.district', 'district')
 			.leftJoinAndSelect('locations.ward', 'ward')
 			.leftJoinAndSelect('store.identity', 'identity')
-			.leftJoinAndSelect('store.user', 'user')
-			// .leftJoinAndSelect('store.user', 'user')
 			.take(pagination.take)
 			.skip(pagination.skip)
 			.orderBy('store.createdAt', 'DESC');

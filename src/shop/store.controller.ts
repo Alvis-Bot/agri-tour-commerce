@@ -109,7 +109,6 @@ export class StoreController {
 	@Public()
 	@Note('Lấy danh sách store (public)')
 	async getShops(@Query() pagination: Pagination) {
-		console.log(pagination);
 		return await this.shopService.getShopsPaginate(pagination);
 	}
 }
