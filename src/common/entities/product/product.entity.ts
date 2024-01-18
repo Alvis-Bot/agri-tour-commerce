@@ -25,17 +25,9 @@ export class Product extends AuditEntity {
 	// tên sản phẩm
 	name: string;
 
-	// ma sản phẩm /sku
-	@Column({ type: 'varchar', length: 80 })
-	sku: string;
-
 	// khối lượng
-	@Column({ type: 'varchar', length: 80 })
-	weight: string;
-
-	// mã vạch/ barcode
-	@Column({ type: 'varchar', length: 80 })
-	barcode: string;
+	@Column()
+	weight: number;
 
 	//  đơn vị tính
 	@Column({ type: 'varchar', length: 80 })
@@ -45,20 +37,12 @@ export class Product extends AuditEntity {
 	@Column({ type: 'text' })
 	description: string;
 
-	//chú thích
-	@Column({ type: 'text' })
-	note: string;
-	// cho phép bán
 	@Column({ type: 'boolean', default: false })
-	isAllowSale: boolean;
-
-	// áp dụng thuế
-	@Column({ type: 'boolean', default: false })
-	isApplyTax: boolean;
+	isActive: boolean;
 
 	@OneToOne(() => ProductPrice)
 	@JoinColumn({ name: 'product_price_id' })
-	price: ProductPrice;
+	productPrice: ProductPrice;
 
 	//ảnh sản phẩm
 	@Column('simple-array')
@@ -66,7 +50,7 @@ export class Product extends AuditEntity {
 
 	@ManyToOne(() => ProductCategory)
 	@JoinColumn({ name: 'product_category_id' })
-	category: ProductCategory;
+	productCategory: ProductCategory;
 
 	@ManyToOne(() => Store, (store) => store.products)
 	@JoinColumn({ name: 'store_id' })

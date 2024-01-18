@@ -48,15 +48,6 @@ export class ProductsController {
 		description: 'Id của sản phẩm',
 		type: Number,
 	})
-	// @Patch(':id/approve')
-	// @Note('Duyệt/Hủy duyệt sản phẩm')
-	// async approveProduct(
-	// 	@Param('id') id: number,
-	// 	@Body() dto: ProductApproveDto,
-	// ) {
-	// 	const product = await this.productsService.getProductById(id);
-	// 	return await this.productsService.approveProduct(dto, product);
-	// }
 	@Get(':id')
 	@Note('Lấy thông tin sản phẩm')
 	async getProductById(@Param('id') id: number) {
@@ -69,7 +60,7 @@ export class ProductsController {
 		@Query() pagination: Pagination,
 		@Query() dto: ProductQueryDto,
 	) {
-		return await this.productsService.getProducts(dto, pagination);
+		return await this.productsService.getProductsPagination(dto, pagination);
 	}
 
 	@Get('store/:id')

@@ -99,12 +99,6 @@ export class StoreController {
 		return await this.shopService.getStoreByUser(myUser);
 	}
 
-	@Note('Lấy trạng thái của step')
-	@Get('step')
-	async getStep(@AuthUser() myUser: User) {
-		return await this.shopService.getStep(myUser);
-	}
-
 	@Get()
 	@Public()
 	@Note('Lấy danh sách store (public)')

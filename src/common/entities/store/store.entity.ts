@@ -49,6 +49,9 @@ export class Store extends AuditEntity {
 	@Column({ nullable: true })
 	businessLicense: string;
 
+	@Column({ nullable: false, default: 0 })
+	step: number;
+
 	@OneToOne(() => User, (user) => user.store)
 	user: User;
 

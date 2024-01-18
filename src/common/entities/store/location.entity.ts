@@ -13,8 +13,7 @@ import { Store } from '@/common/entities/store/store.entity';
 export enum LocationType {
 	COLLECTION = 'COLLECTION', //  địa chỉ lấy hàng
 	STORE = 'STORE', // địa chỉ cửa hàng
-	//địa chỉ khinh doanh
-	BUSINESS = 'BUSINESS',
+	BUSINESS = 'BUSINESS', //	//địa chỉ khinh doanh
 }
 @Entity('locations')
 export class Location {

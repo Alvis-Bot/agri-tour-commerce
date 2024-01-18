@@ -12,6 +12,6 @@ export class ProductCategory {
 	@Column({ nullable: true })
 	image: string;
 	// một danh mục sản phẩm có nhiều sản phẩm
-	@OneToMany(() => Product, (product) => product.category)
+	@OneToMany(() => Product, (product) => product.productCategory)
 	product: Product[];
 }

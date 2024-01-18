@@ -126,8 +126,6 @@ export class StoreService {
 			!isLocationExists && locations.push(createdLocation);
 		}
 
-		console.log(locations);
-
 		// nếu store đã tồn tại thì update , không thì tạo mới
 		if (store) {
 			return await this.storeRepository.save({
@@ -142,6 +140,7 @@ export class StoreService {
 		const createdShop = this.storeRepository.create({
 			...dto,
 			locations: await this.locationEntityRepository.save(locations),
+			step: 1,
 			user: myUser,
 		});
 
@@ -220,6 +219,11 @@ export class StoreService {
 				});
 			});
 			await this.deliveryOptionEntityRepository.save(deliveryOptions);
+			await this.storeRepository.save({
+				...store,
+				deliveryOptions,
+				step: 2,
+			});
 		}
 
 		return await this.getStoreByUser(myUser);
@@ -228,6 +232,7 @@ export class StoreService {
 	async getStep(myUser: User) {
 		return await this.storeRepository
 			.createQueryBuilder('store')
+			.leftJoinAndSelect('store.user', 'user')
 			.select('store.step')
 			.where('store.user.id = :userId', { userId: myUser.id })
 			.getOne();
@@ -250,7 +255,6 @@ export class StoreService {
 			},
 			LocationType.STORE,
 		);
-		console.log(createdLocation);
 		const isLocationExists = await CodeUtil.isLocationExists(
 			store?.locations,
 			createdLocation.province.code,
@@ -271,6 +275,7 @@ export class StoreService {
 		await this.storeRepository.save({
 			...store,
 			...dto,
+			step: 3,
 			locations: storeLocations,
 			businessLicense: businessLicense.filename,
 		});
@@ -301,6 +306,7 @@ export class StoreService {
 			const identity = await this.identityRepository.save(identityCreated);
 			await this.storeRepository.save({
 				...store,
+				step: 4,
 				identity,
 			});
 		} else {

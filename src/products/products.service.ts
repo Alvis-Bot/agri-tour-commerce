@@ -11,6 +11,8 @@ import { Pagination } from '@/common/pagination/pagination.dto';
 import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
 import { StoreService } from '@/shop/store.service';
+import { ProductPricesService } from '@/product-prices/product-prices.service';
+import { ProductModal } from '@/products/modal/product.modal';
 
 @Injectable()
 export class ProductsService {
@@ -18,6 +20,7 @@ export class ProductsService {
 		@InjectRepository(Product)
 		private readonly productRepository: Repository<Product>,
 		private readonly productCategoriesService: ProductCategoriesService,
+		private readonly productPricesService: ProductPricesService,
 		private readonly shopService: StoreService,
 	) {}
 
@@ -28,24 +31,34 @@ export class ProductsService {
 	) {
 		const store = await this.shopService.selectOneStoreById(storeId);
 		if (!store) throw new ApiException(ErrorMessages.STORE_NOT_FOUND);
-		const category = await this.productCategoriesService.getProductCategoryById(
-			dto.productCategoryId,
-		);
-		const product = this.productRepository.create({
+		const productCategory =
+			await this.productCategoriesService.getProductCategoryById(
+				dto.productCategoryId,
+			);
+		const productPrice = await this.productPricesService.createBasePrice({
 			...dto,
+		});
+		const productCreated = this.productRepository.create({
+			...dto,
+			productPrice,
 			images: files.map((file) => file.filename),
-			category: category,
+			productCategory: productCategory,
 			store,
 		});
-		return await this.productRepository.save(product);
+		const product = await this.productRepository.save(productCreated);
+		return new ProductModal()
+			.loadFromEntity(product)
+			.loadFromProductPrice(product.productPrice)
+			.loadFromProductCategory(product.productCategory)
+			.loadFromStore(product.store);
 	}
 
-	// async approveProduct(dto: ProductApproveDto, product: Product) {
-	// 	return await this.productRepository.save({
-	// 		...product,
-	// 		...dto,
-	// 	});
-	// }
+	async selectOneProductById(id: number) {
+		return await this.productRepository.findOne({
+			where: { id },
+			relations: ['productPrice', 'productCategory'],
+		});
+	}
 
 	async selectOneProductFetchStoreById(id: number) {
 		return await this.productRepository.findOne({
@@ -55,78 +68,69 @@ export class ProductsService {
 	}
 
 	async getProductById(id: number) {
-		const product = await this.productRepository
-			//sum rating
-			.createQueryBuilder('product')
-			.leftJoinAndSelect('product.ratings', 'ratings')
-			.leftJoinAndSelect('product.category', 'category')
-			.select('ROUND(AVG(ratings.rating),2)', 'rating')
-			.addSelect('product.id', 'id')
-			.addSelect('product.name', 'name')
-			.addSelect('product.price', 'price')
-			.addSelect('product.salePrice', 'salePrice')
-			.addSelect('product.saleStartDate', 'saleStartDate')
-			.addSelect('product.saleEndDate', 'saleEndDate')
-			.addSelect('product.quantity', 'quantity')
-			.addSelect('product.images', 'images')
-			.addSelect('product.inventory', 'inventory')
-			.addSelect('product.status', 'status')
-			.addSelect('product.approveStatus', 'approveStatus')
-			.addSelect('product.description', 'description')
-			.addSelect('product.createdAt', 'createdAt')
-			.addSelect('product.updatedAt', 'updatedAt')
-			.groupBy('product.id')
-			.where('product.id = :id', { id })
-			.getRawOne();
-		if (!product) {
-			throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
-		}
-		return product;
+		const product = await this.selectOneProductById(id);
+		if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
+		return new ProductModal()
+			.loadFromEntity(product)
+			.loadFromProductPrice(product.productPrice)
+			.loadFromProductCategory(product.productCategory)
+			.loadFromStore(product.store);
 	}
 
-	async getProducts(dto: ProductQueryDto, pagination: Pagination) {
+	async getProductsPagination(dto: ProductQueryDto, pagination: Pagination) {
 		// add field sum rating
 		const queryBuilder = this.productRepository
 			.createQueryBuilder('product')
-			.leftJoinAndSelect('product.ratings', 'ratings')
-			.leftJoinAndSelect('product.category', 'category')
-			.select('ROUND(AVG(ratings.rating),2)', 'rating')
-			.addSelect('product.id', 'id')
-			.addSelect('product.name', 'name')
-			.addSelect('product.price', 'price')
-			.addSelect('product.salePrice', 'salePrice')
-			.addSelect('product.saleStartDate', 'saleStartDate')
-			.addSelect('product.saleEndDate', 'saleEndDate')
-			.addSelect('product.quantity', 'quantity')
-			.addSelect('product.images', 'images')
-			.addSelect('product.inventory', 'inventory')
-			.addSelect('product.status', 'status')
-			.addSelect('product.approveStatus', 'approveStatus')
-			.addSelect('product.description', 'description')
-			.addSelect('product.createdAt', 'createdAt')
-			.addSelect('product.updatedAt', 'updatedAt')
-			.groupBy('product.id')
-			// nếu không có categoryId thì lấy tất cả
-			.where(dto.categoryId ? 'product.category.id = :categoryId' : '1=1', {
-				categoryId: dto.categoryId,
+			.leftJoinAndSelect('product.productPrice', 'productPrice')
+			.leftJoinAndSelect('product.productCategory', 'productCategory')
+			.leftJoinAndSelect('product.store', 'store')
+			.where('product.isActive = :isActive', { isActive: true })
+			// nếu có  productCategoryId thì mới join
+			.andWhere(
+				dto.productCategoryId
+					? 'product.productCategoryId = :productCategoryId'
+					: '1=1',
+				{
+					productCategoryId: dto.productCategoryId,
+				},
+			)
+			// nếu có storeId thì mới join
+			.andWhere(dto.storeId ? 'product.storeId = :storeId' : '1=1', {
+				storeId: dto.storeId,
 			})
-			// .andWhere('product.approveStatus = :approveStatus', { approveStatus: ApproveStatus.APPROVED })
 			.skip(pagination.skip)
 			.take(pagination.take);
-		// .where('product.category.id = :categoryId', { categoryId: dto.categoryId })
-		// column "product.id" must appear in the GROUP BY clause or be used in an aggregate functio
 
 		const itemCount = await queryBuilder.getCount();
-		const raw = await queryBuilder.getRawMany();
+		const { entities } = await queryBuilder.getRawAndEntities();
+		const productModals = entities.map((entity) =>
+			new ProductModal()
+				.loadFromEntity(entity)
+				.loadFromProductPrice(entity.productPrice)
+				.loadFromProductCategory(entity.productCategory)
+				.loadFromStore(entity.store),
+		);
 		const meta = new Meta({ itemCount, pagination });
-		return new PaginationModel(raw, meta);
+		return new PaginationModel(productModals, meta);
+	}
+
+	async selectOneProductByStoreId(id: number): Promise<Product | undefined> {
+		return await this.productRepository
+			.createQueryBuilder('product')
+			.leftJoinAndSelect('product.productPrice', 'productPrice')
+			.leftJoinAndSelect('product.productCategory', 'productCategory')
+			.leftJoinAndSelect('product.store', 'store')
+			.where('product.storeId = :storeId', { storeId: id })
+			.getOne();
 	}
 
 	async getProductsByStoreId(id: number) {
-		return await this.productRepository.find({
-			where: {
-				store: { id },
-			},
-		});
+		const product = await this.selectOneProductByStoreId(id);
+		if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
+		return new ProductModal()
+			.loadFromEntity(product)
+			.loadFromProductPrice(product.productPrice)
+			.loadFromProductCategory(product.productCategory)
+			.loadFromStore(product.store);
 	}
 }
