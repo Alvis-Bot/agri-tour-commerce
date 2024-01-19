@@ -50,6 +50,9 @@ export class OrdersService {
 					quantity: dto.orderDetails.find(
 						(orderDetail) => orderDetail.productId === product.id,
 					).quantity,
+					note: dto.orderDetails.find(
+						(orderDetail) => orderDetail.productId === product.id,
+					).note,
 				})),
 		}));
 
@@ -59,8 +62,9 @@ export class OrdersService {
 		const map = orders.map(async (order) => {
 			const store = await this.storeService.selectOneStoreById(order.storeId);
 			const orderDetailCreated = order.orderDetails.map(
-				({ quantity, product }) => {
+				({ quantity, product, note }) => {
 					return this.orderDetailRepository.create({
+						note,
 						quantity,
 						product,
 					});
@@ -77,7 +81,6 @@ export class OrdersService {
 				0,
 			);
 			const orderCreated = this.orderRepository.create({
-				...dto,
 				store,
 				total,
 				user: myUser,

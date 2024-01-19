@@ -21,15 +21,15 @@ export class OrderDetailCreateDto {
 	@Min(1)
 	@IsPositive()
 	quantity: number;
-}
 
-export class OrderCreateDto {
 	@ApiPropertyOptional({
 		description: 'Ghi chú',
 	})
 	@IsOptional()
 	note?: string;
+}
 
+export class OrderCreateDto {
 	@ApiProperty({ type: [OrderDetailCreateDto] })
 	@IsArray()
 	@ArrayMinSize(1)
