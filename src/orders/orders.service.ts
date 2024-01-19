@@ -140,7 +140,6 @@ export class OrdersService {
 			.leftJoinAndSelect('order.orderDetails', 'orderDetail')
 			.leftJoinAndSelect('orderDetail.product', 'product')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
-			.leftJoinAndSelect('product.productCategory', 'productCategory')
 			.leftJoinAndSelect('product.store', 'store')
 			.where('order.id = :id', { id })
 			.getOne();

@@ -55,6 +55,7 @@ export class ProductsService {
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
 			.leftJoinAndSelect('product.store', 'store')
+			.leftJoinAndSelect('product.ratings', 'rating')
 			.where('product.id = :id', { id })
 			.getOne();
 	}
