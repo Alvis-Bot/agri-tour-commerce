@@ -10,6 +10,9 @@ import { AuditEntity } from '@/common/entities/audit.entity';
 import { OrderDetail } from '@/common/entities/order-detail.entity';
 import { User } from '@/common/entities/user.entity';
 import { Store } from '@/common/entities/store/store.entity';
+import { Province } from '@/common/entities/province.entity';
+import { District } from '@/common/entities/district.entity';
+import { Ward } from '@/common/entities/ward.entity';
 
 export enum OrderStatus {
 	// 0: chờ xác nhận
@@ -35,6 +38,21 @@ export class Order extends AuditEntity {
 	//tổng
 	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
 	total: number;
+
+	@Column({ nullable: false })
+	address: string;
+
+	@ManyToOne(() => Province)
+	@JoinColumn({ name: 'province_code' })
+	province: Province;
+
+	@ManyToOne(() => District)
+	@JoinColumn({ name: 'district_code' })
+	district: District;
+
+	@ManyToOne(() => Ward)
+	@JoinColumn({ name: 'ward_code' })
+	ward: Ward;
 
 	// trạng thái đơn hàng
 

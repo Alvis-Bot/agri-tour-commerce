@@ -13,6 +13,9 @@ import { StoresService } from '@/stores/stores.service';
 import { OrderStatusUpdateDto } from '@/orders/dto/order-status-update.dto';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
+import { LocationDto } from '@/stores/dto/store-create.dto';
+import { Location } from '@/common/entities/store/location.entity';
+import { RegionsService } from '@/regions/regions.service';
 
 @Injectable()
 export class OrdersService {
@@ -23,17 +26,21 @@ export class OrdersService {
 		@InjectRepository(OrderDetail)
 		private readonly orderDetailRepository: Repository<OrderDetail>,
 		private readonly storeService: StoresService,
+		private readonly regionsService: RegionsService,
+		@InjectRepository(Location)
+		private readonly locationEntityRepository: Repository<Location>,
 	) {}
 
 	async createOrder(dto: OrderCreateDto, myUser: User) {
 		// nhóm các sản phẩm theo store
 		const products = await Promise.all(
-			dto.orderDetails.map(
-				async (orderDetail) =>
-					await this.productsService.selectOneProductById(
-						orderDetail.productId,
-					),
-			),
+			dto.orderDetails.map(async (orderDetail) => {
+				const product = await this.productsService.selectOneProductById(
+					orderDetail.productId,
+				);
+				if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
+				return product;
+			}),
 		);
 
 		console.log(products);
@@ -60,6 +67,19 @@ export class OrdersService {
 
 		// tạo order
 		const map = orders.map(async (order) => {
+			const province = await this.regionsService.getProvinceByCode(
+				dto.provinceCode,
+			);
+			if (!province) throw new ApiException(ErrorMessages.PROVINCE_NOT_FOUND);
+
+			const district = await this.regionsService.getDistrictByCode(
+				dto.districtCode,
+			);
+			if (!district) throw new ApiException(ErrorMessages.DISTRICT_NOT_FOUND);
+
+			const ward = await this.regionsService.getWardByCode(dto.wardCode);
+			if (!ward) throw new ApiException(ErrorMessages.WARD_NOT_FOUND);
+
 			const store = await this.storeService.selectOneStoreById(order.storeId);
 			const orderDetailCreated = order.orderDetails.map(
 				({ quantity, product, note }) => {
@@ -84,6 +104,10 @@ export class OrdersService {
 				store,
 				total,
 				user: myUser,
+				province,
+				district,
+				ward,
+				address: dto.address,
 				orderDetails,
 			});
 
@@ -93,16 +117,41 @@ export class OrdersService {
 		return await Promise.all(map);
 	}
 
+	async checkAndCreateLocation(location: LocationDto): Promise<Location> {
+		const province = await this.regionsService.getProvinceByCode(
+			location.provinceCode,
+		);
+		if (!province) throw new ApiException(ErrorMessages.PROVINCE_NOT_FOUND);
+
+		const district = await this.regionsService.getDistrictByCode(
+			location.districtCode,
+		);
+		if (!district) throw new ApiException(ErrorMessages.DISTRICT_NOT_FOUND);
+
+		const ward = await this.regionsService.getWardByCode(location.wardCode);
+		if (!ward) throw new ApiException(ErrorMessages.WARD_NOT_FOUND);
+
+		return this.locationEntityRepository.create({
+			...location,
+			province,
+			district,
+			ward,
+		});
+	}
 	async getOrdersPagination(pagination: Pagination, storeId: number) {
 		// tính tổng tiền productPrice.retailPrice * orderDetail.quantity
 		const queryBuilder = this.orderRepository
 			.createQueryBuilder('order')
 			.leftJoinAndSelect('order.orderDetails', 'orderDetail')
+			.leftJoinAndSelect('order.province', 'province')
+			.leftJoinAndSelect('order.district', 'district')
+			.leftJoinAndSelect('order.ward', 'ward')
 			.leftJoinAndSelect('orderDetail.product', 'product')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
+
 			.leftJoinAndSelect('product.store', 'store')
-			.orderBy('order.createdAt', 'DESC')
+			.orderBy('order.createdAt', pagination.order)
 			// nếu có  storeId thì mới join
 			.andWhere(storeId ? 'order.store_id = :storeId' : '1=1', {
 				storeId,
@@ -119,12 +168,15 @@ export class OrdersService {
 		// tính tổng tiền productPrice.retailPrice * orderDetail.quantity
 		const queryBuilder = this.orderRepository
 			.createQueryBuilder('order')
+			.leftJoinAndSelect('order.province', 'province')
+			.leftJoinAndSelect('order.district', 'district')
+			.leftJoinAndSelect('order.ward', 'ward')
 			.leftJoinAndSelect('order.orderDetails', 'orderDetail')
 			.leftJoinAndSelect('orderDetail.product', 'product')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
 			.leftJoinAndSelect('product.store', 'store')
-			.orderBy('order.createdAt', 'DESC')
+			.orderBy('order.createdAt', pagination.order)
 			// nếu có  storeId thì mới join
 			.andWhere(myUser ? 'order.user_id = :userId' : '1=1', {
 				userId: myUser.id,

@@ -6,12 +6,13 @@ import { Order } from '@/common/entities/order.entity';
 import { OrderDetail } from '@/common/entities/order-detail.entity';
 import { ProductsModule } from '@/products/products.module';
 import { StoresModule } from '@/stores/stores.module';
+import { Location } from '@/common/entities/store/location.entity';
 
 @Module({
 	imports: [
 		ProductsModule,
 		StoresModule,
-		TypeOrmModule.forFeature([Order, OrderDetail]),
+		TypeOrmModule.forFeature([Order, OrderDetail, Location]),
 	],
 	controllers: [OrdersController],
 	providers: [OrdersService],
