@@ -13,7 +13,10 @@ import { Service } from '@/common/enums/service';
 import { IDeliveryMethodService } from '@/delivery-methods/service/delivery-methods';
 import { DeliveryOption } from '@/common/entities/store/delivery-option.entity';
 import { RegionsService } from '@/regions/regions.service';
-import { Location } from '@/common/entities/store/location.entity';
+import {
+	Location,
+	LocationType,
+} from '@/common/entities/store/location.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
 
 @Injectable()
@@ -68,7 +71,7 @@ export class StoresService {
 			.getOne();
 	}
 
-	async checkAndCreateLocation(location: LocationDto): Promise<Location> {
+	async checkAndCreateLocation(location: LocationDto, type?: LocationType) {
 		const province = await this.regionsService.getProvinceByCode(
 			location.provinceCode,
 		);
@@ -87,6 +90,7 @@ export class StoresService {
 			province,
 			district,
 			ward,
+			type: type || LocationType.COLLECTION,
 		});
 	}
 
@@ -119,15 +123,19 @@ export class StoresService {
 		);
 
 		// tạo địa chỉ cho shop
-		const locationsCreated = await Promise.all(
-			dto.locations.map(async (location) => {
-				return await this.checkAndCreateLocation(location);
-			}),
+		const collectionLocation = await this.checkAndCreateLocation(
+			dto.collectionLocation,
+			LocationType.COLLECTION,
+		);
+		const storeLocation = await this.checkAndCreateLocation(
+			dto.storeLocation,
+			LocationType.STORE,
 		);
 
-		const locations = await this.locationEntityRepository.save(
-			locationsCreated,
-		);
+		const locations = await this.locationEntityRepository.save([
+			collectionLocation,
+			storeLocation,
+		]);
 
 		// tạo thông tin chứng minh cho shop
 		const identityCreated = this.identityRepository.create({

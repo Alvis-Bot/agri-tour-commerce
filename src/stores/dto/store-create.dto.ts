@@ -20,7 +20,6 @@ class LocationDto {
 	districtCode: string;
 	wardCode: string;
 	address: string;
-	type: LocationType;
 }
 
 class DeliveryMethodDto {
@@ -35,36 +34,36 @@ class StoreCreateDto {
 	name: string;
 
 	//array multipart/form-data
-	@ValidateNested()
+
 	@Type(() => LocationDto)
 	@Transform(({ value }) => JSON.parse(value))
 	@ApiProperty({
-		type: [LocationDto],
-		default: [
-			{
-				provinceCode: '01',
-				districtCode: '001',
-				wardCode: '00001',
-				type: LocationType.COLLECTION,
-				address: 'Số 1, đường 1, phường 1, quận 1, thành phố 1',
-			},
-			{
-				provinceCode: '01',
-				districtCode: '001',
-				wardCode: '00001',
-				type: LocationType.STORE,
-				address: 'Số 2, đường 1, phường 1, quận 1, thành phố 1',
-			},
-			{
-				provinceCode: '01',
-				districtCode: '001',
-				wardCode: '00001',
-				type: LocationType.BUSINESS,
-				address: 'Số 3, đường 1, phường 1, quận 1, thành phố 1',
-			},
-		],
+		type: LocationDto,
+		default: {
+			provinceCode: '01',
+			districtCode: '001',
+			wardCode: '00001',
+			address: 'Số 1, đường 1, phường 1, quận 1, thành phố 1',
+			type: LocationType.COLLECTION,
+		},
 	})
-	readonly locations: LocationDto[];
+	// địa chỉ lấy hàng
+	readonly collectionLocation: LocationDto;
+
+	@Type(() => LocationDto)
+	@Transform(({ value }) => JSON.parse(value))
+	@ApiProperty({
+		type: LocationDto,
+		default: {
+			provinceCode: '01',
+			districtCode: '001',
+			wardCode: '00001',
+			address: 'Số 1, đường 1, phường 1, quận 1, thành phố 1',
+			type: LocationType.STORE,
+		},
+	})
+	// địa chỉ cửa hàng
+	readonly storeLocation: LocationDto;
 
 	@IsEmail()
 	@ApiProperty({ description: 'Email' })

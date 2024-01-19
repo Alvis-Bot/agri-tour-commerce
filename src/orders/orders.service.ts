@@ -13,7 +13,6 @@ import { StoresService } from '@/stores/stores.service';
 import { OrderStatusUpdateDto } from '@/orders/dto/order-status-update.dto';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
-import { LocationDto } from '@/stores/dto/store-create.dto';
 import { Location } from '@/common/entities/store/location.entity';
 import { RegionsService } from '@/regions/regions.service';
 
@@ -115,28 +114,6 @@ export class OrdersService {
 		});
 
 		return await Promise.all(map);
-	}
-
-	async checkAndCreateLocation(location: LocationDto): Promise<Location> {
-		const province = await this.regionsService.getProvinceByCode(
-			location.provinceCode,
-		);
-		if (!province) throw new ApiException(ErrorMessages.PROVINCE_NOT_FOUND);
-
-		const district = await this.regionsService.getDistrictByCode(
-			location.districtCode,
-		);
-		if (!district) throw new ApiException(ErrorMessages.DISTRICT_NOT_FOUND);
-
-		const ward = await this.regionsService.getWardByCode(location.wardCode);
-		if (!ward) throw new ApiException(ErrorMessages.WARD_NOT_FOUND);
-
-		return this.locationEntityRepository.create({
-			...location,
-			province,
-			district,
-			ward,
-		});
 	}
 	async getOrdersPagination(pagination: Pagination, storeId: number) {
 		// tính tổng tiền productPrice.retailPrice * orderDetail.quantity
