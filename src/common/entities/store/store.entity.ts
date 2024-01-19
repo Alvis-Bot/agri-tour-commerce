@@ -35,7 +35,7 @@ export class Store extends AuditEntity {
 		default: BusinessType.INDIVIDUAL,
 	})
 	//loại hình doanh nghiệp
-	type: BusinessType;
+	businessType: BusinessType;
 
 	@Column({ nullable: true })
 	taxCode?: string;

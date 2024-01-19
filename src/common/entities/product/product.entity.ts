@@ -30,8 +30,15 @@ export class Product extends AuditEntity {
 	weight: number;
 
 	//  đơn vị tính
-	@Column({ type: 'varchar', length: 80 })
+	@Column({
+		type: 'varchar',
+		length: 80,
+	})
 	unit: string;
+
+	// số lượng tồn
+	@Column({ type: 'int', default: 0 })
+	inventory: number;
 
 	// mo ta
 	@Column({ type: 'text' })

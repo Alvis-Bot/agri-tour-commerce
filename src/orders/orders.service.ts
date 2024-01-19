@@ -9,7 +9,7 @@ import { Pagination } from '@/common/pagination/pagination.dto';
 import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
 import { User } from '@/common/entities/user.entity';
-import { StoreService } from '@/shop/store.service';
+import { StoresService } from '@/stores/stores.service';
 import { ApiException } from '@/exception/api.exception';
 import { ErrorMessages } from '@/exception/error.code';
 
@@ -21,7 +21,7 @@ export class OrdersService {
 		private readonly orderRepository: Repository<Order>,
 		@InjectRepository(OrderDetail)
 		private readonly orderDetailRepository: Repository<OrderDetail>,
-		private readonly storeService: StoreService,
+		private readonly storeService: StoresService,
 	) {}
 
 	async createOrder(dto: OrderCreateDto, myUser: User) {

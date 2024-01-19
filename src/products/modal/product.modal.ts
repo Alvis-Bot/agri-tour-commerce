@@ -33,8 +33,7 @@ export class ProductModal {
 	}
 
 	public loadFromProductPrice(entity: ProductPrice) {
-		console.log(entity);
-		this.productPrice.salePrice = entity.retailPrice;
+		this.productPrice.retailPrice = entity.retailPrice;
 		this.productPrice.salePrice = entity.salePrice;
 		this.productPrice.saleStartDate = entity.saleStartDate;
 		this.productPrice.saleEndDate = entity.saleEndDate;

@@ -10,7 +10,7 @@ import { ProductQueryDto } from '@/products/dto/product-query.dto';
 import { Pagination } from '@/common/pagination/pagination.dto';
 import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
-import { StoreService } from '@/shop/store.service';
+import { StoresService } from '@/stores/stores.service';
 import { ProductPricesService } from '@/product-prices/product-prices.service';
 import { ProductModal } from '@/products/modal/product.modal';
 
@@ -21,7 +21,7 @@ export class ProductsService {
 		private readonly productRepository: Repository<Product>,
 		private readonly productCategoriesService: ProductCategoriesService,
 		private readonly productPricesService: ProductPricesService,
-		private readonly shopService: StoreService,
+		private readonly shopService: StoresService,
 	) {}
 
 	async createProduct(
@@ -49,8 +49,7 @@ export class ProductsService {
 		return new ProductModal()
 			.loadFromEntity(product)
 			.loadFromProductPrice(product.productPrice)
-			.loadFromProductCategory(product.productCategory)
-			.loadFromStore(product.store);
+			.loadFromProductCategory(product.productCategory);
 	}
 
 	async selectOneProductById(id: number) {
@@ -83,7 +82,6 @@ export class ProductsService {
 			.createQueryBuilder('product')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
-			.leftJoinAndSelect('product.store', 'store')
 			.where('product.isActive = :isActive', { isActive: true })
 			// nếu có  productCategoryId thì mới join
 			.andWhere(
@@ -107,8 +105,7 @@ export class ProductsService {
 			new ProductModal()
 				.loadFromEntity(entity)
 				.loadFromProductPrice(entity.productPrice)
-				.loadFromProductCategory(entity.productCategory)
-				.loadFromStore(entity.store),
+				.loadFromProductCategory(entity.productCategory),
 		);
 		const meta = new Meta({ itemCount, pagination });
 		return new PaginationModel(productModals, meta);

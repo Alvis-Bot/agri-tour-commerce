@@ -8,7 +8,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegionsModule } from './regions/regions.module';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
-import { StoreModule } from './shop/store.module';
+import { StoresModule } from './stores/stores.module';
 import { AccessControlModule } from 'nest-access-control';
 import { roles } from '@/auth/role.builder';
 import { ProductsModule } from './products/products.module';
@@ -56,7 +56,7 @@ console.log(process.env.DB_PASSWORD);
 		UsersModule,
 		RegionsModule,
 		ProductCategoriesModule,
-		StoreModule,
+		StoresModule,
 		ProductsModule,
 		GatewayModule,
 		OrdersModule,
