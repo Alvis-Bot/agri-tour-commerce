@@ -13,10 +13,7 @@ import { Service } from '@/common/enums/service';
 import { IDeliveryMethodService } from '@/delivery-methods/service/delivery-methods';
 import { DeliveryOption } from '@/common/entities/store/delivery-option.entity';
 import { RegionsService } from '@/regions/regions.service';
-import {
-	Location,
-	LocationType,
-} from '@/common/entities/store/location.entity';
+import { Location } from '@/common/entities/store/location.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
 
 @Injectable()
@@ -71,10 +68,7 @@ export class StoresService {
 			.getOne();
 	}
 
-	async checkAndCreateLocation(
-		location: LocationDto,
-		type?: LocationType,
-	): Promise<Location> {
+	async checkAndCreateLocation(location: LocationDto): Promise<Location> {
 		const province = await this.regionsService.getProvinceByCode(
 			location.provinceCode,
 		);
@@ -93,7 +87,6 @@ export class StoresService {
 			province,
 			district,
 			ward,
-			type: type || LocationType.COLLECTION,
 		});
 	}
 
@@ -152,7 +145,9 @@ export class StoresService {
 			locations,
 			identity,
 			deliveryOptions,
-			businessLicense: businessLicense[0].filename,
+			businessLicense: businessLicense
+				? businessLicense[0].filename
+				: undefined,
 		});
 
 		return await this.storeRepository.save(storeCreated);

@@ -12,7 +12,6 @@ import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
 import { StoresService } from '@/stores/stores.service';
 import { ProductPricesService } from '@/product-prices/product-prices.service';
-import { ProductModal } from '@/products/modal/product.modal';
 
 @Injectable()
 export class ProductsService {
@@ -111,15 +110,5 @@ export class ProductsService {
 			.leftJoinAndSelect('product.store', 'store')
 			.where('product.storeId = :storeId', { storeId: id })
 			.getOne();
-	}
-
-	async getProductsByStoreId(id: number) {
-		const product = await this.selectOneProductByStoreId(id);
-		if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
-		return new ProductModal()
-			.loadFromEntity(product)
-			.loadFromProductPrice(product.productPrice)
-			.loadFromProductCategory(product.productCategory)
-			.loadFromStore(product.store);
 	}
 }

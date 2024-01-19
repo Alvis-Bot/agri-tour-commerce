@@ -5,7 +5,11 @@ import {
 	IsString,
 	ValidateNested,
 } from 'class-validator';
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import {
+	ApiProperty,
+	ApiPropertyOptional,
+	IntersectionType,
+} from '@nestjs/swagger';
 import { BusinessType } from '@/common/enums/business-type';
 import { Transform, Type } from 'class-transformer';
 import { IdentityType } from '@/common/entities/store/identity.entity';
@@ -20,13 +24,8 @@ class LocationDto {
 }
 
 class DeliveryMethodDto {
-	@IsNotEmpty()
-	@ApiProperty({ description: 'Id của phương thức vận chuyển', default: 1 })
-	readonly id: number;
-
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly isLocked: boolean;
+	id: number;
+	isLocked: boolean;
 }
 
 class StoreCreateDto {
@@ -56,6 +55,13 @@ class StoreCreateDto {
 				type: LocationType.STORE,
 				address: 'Số 2, đường 1, phường 1, quận 1, thành phố 1',
 			},
+			{
+				provinceCode: '01',
+				districtCode: '001',
+				wardCode: '00001',
+				type: LocationType.BUSINESS,
+				address: 'Số 3, đường 1, phường 1, quận 1, thành phố 1',
+			},
 		],
 	})
 	readonly locations: LocationDto[];
@@ -71,6 +77,9 @@ class StoreCreateDto {
 }
 
 class StoreUpdateStepOneDto {
+	@ValidateNested()
+	@Type(() => DeliveryMethodDto)
+	@Transform(({ value }) => JSON.parse(value))
 	@ApiProperty({
 		type: [DeliveryMethodDto],
 		default: [
@@ -80,11 +89,10 @@ class StoreUpdateStepOneDto {
 			},
 			{
 				id: 2,
-				isLocked: false,
+				isLocked: true,
 			},
 		],
 	})
-	@Transform(({ value }) => JSON.parse(value))
 	readonly deliveryMethods: DeliveryMethodDto[];
 }
 
@@ -111,7 +119,7 @@ class StoreUpdateStepTwoDto extends LocationDto {
 	@Transform(({ value }) => value.split(',').map((item: string) => item.trim()))
 	readonly emailInvoice: string[];
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		type: 'string',
 		format: 'binary',
 		description: 'Mã giấy phép kinh doanh',
