@@ -39,7 +39,7 @@ export class Order extends AuditEntity {
 	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
 	total: number;
 
-	@Column({ nullable: false })
+	@Column({ nullable: true })
 	address: string;
 
 	@ManyToOne(() => Province)
