@@ -77,7 +77,7 @@ export class OrdersService {
 			const total = orderDetails.reduce(
 				(acc, orderDetail) =>
 					acc +
-					orderDetail.product.productPrice.retailPrice * orderDetail.quantity,
+					orderDetail.product.productPrice.salePrice * orderDetail.quantity,
 				0,
 			);
 			const orderCreated = this.orderRepository.create({
