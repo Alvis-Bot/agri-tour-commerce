@@ -81,18 +81,19 @@ export class ProductsService {
 			.createQueryBuilder('product')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
+			// .leftJoinAndSelect('product.store', 'store')
 			.where('product.isActive = :isActive', { isActive: true })
 			// nếu có  productCategoryId thì mới join
 			.andWhere(
 				dto.productCategoryId
-					? 'product.productCategoryId = :productCategoryId'
+					? 'product.product_category_id = :productCategoryId'
 					: '1=1',
 				{
 					productCategoryId: dto.productCategoryId,
 				},
 			)
 			// nếu có storeId thì mới join
-			.andWhere(dto.storeId ? 'product.storeId = :storeId' : '1=1', {
+			.andWhere(dto.storeId ? 'product.store_id = :storeId' : '1=1', {
 				storeId: dto.storeId,
 			})
 			.skip(pagination.skip)
@@ -100,14 +101,8 @@ export class ProductsService {
 
 		const itemCount = await queryBuilder.getCount();
 		const { entities } = await queryBuilder.getRawAndEntities();
-		const productModals = entities.map((entity) =>
-			new ProductModal()
-				.loadFromEntity(entity)
-				.loadFromProductPrice(entity.productPrice)
-				.loadFromProductCategory(entity.productCategory),
-		);
 		const meta = new Meta({ itemCount, pagination });
-		return new PaginationModel(productModals, meta);
+		return new PaginationModel(entities, meta);
 	}
 
 	async selectOneProductByStoreId(id: number): Promise<Product | undefined> {
