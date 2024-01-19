@@ -10,8 +10,6 @@ import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
 import { User } from '@/common/entities/user.entity';
 import { StoresService } from '@/stores/stores.service';
-import { ApiException } from '@/exception/api.exception';
-import { ErrorMessages } from '@/exception/error.code';
 
 @Injectable()
 export class OrdersService {
@@ -25,56 +23,86 @@ export class OrdersService {
 	) {}
 
 	async createOrder(dto: OrderCreateDto, myUser: User) {
-		const store = await this.storeService.selectOneStoreById(dto.storeId);
-		const orderDetails = await Promise.all(
-			dto.orderDetails.map(async (value) => {
-				const product =
-					await this.productsService.selectOneProductFetchStoreById(
-						value.productId,
-					);
-				if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
-				// nếu product không thuộc store này thì không cho đặt hàng
-				if (product.store.id !== store.id)
-					throw new ApiException(ErrorMessages.PRODUCT_NOT_IN_STORE);
-				return this.orderDetailRepository.create({
-					...value,
-					product,
-				});
-			}),
+		// nhóm các sản phẩm theo store
+		const products = await Promise.all(
+			dto.orderDetails.map(
+				async (orderDetail) =>
+					await this.productsService.selectOneProductById(
+						orderDetail.productId,
+					),
+			),
 		);
 
-		const orderDetailSave = await this.orderDetailRepository.save(orderDetails);
+		console.log(products);
 
-		const order = this.orderRepository.create({
-			...dto,
-			orderDetails: orderDetailSave,
-			user: myUser,
-			store,
+		// nhóm order cho từng store
+		const storeIds = products.map((product) => product.store.id);
+		const uniqueStoreIds = [...new Set(storeIds)];
+		const orders = uniqueStoreIds.map((storeId) => ({
+			storeId,
+			orderDetails: products
+				.filter((product) => product.store.id === storeId)
+				.map((product) => ({
+					product,
+					quantity: dto.orderDetails.find(
+						(orderDetail) => orderDetail.productId === product.id,
+					).quantity,
+				})),
+		}));
+
+		console.log(orders);
+
+		// tạo order
+		const map = orders.map(async (order) => {
+			const store = await this.storeService.selectOneStoreById(order.storeId);
+			const orderDetailCreated = order.orderDetails.map(
+				({ quantity, product }) => {
+					return this.orderDetailRepository.create({
+						quantity,
+						product,
+					});
+				},
+			);
+			const orderDetails = await this.orderDetailRepository.save(
+				orderDetailCreated,
+			);
+
+			const total = orderDetails.reduce(
+				(acc, orderDetail) =>
+					acc +
+					orderDetail.product.productPrice.retailPrice * orderDetail.quantity,
+				0,
+			);
+			const orderCreated = this.orderRepository.create({
+				...dto,
+				store,
+				total,
+				user: myUser,
+				orderDetails,
+			});
+
+			return await this.orderRepository.save(orderCreated);
 		});
 
-		const saveOrder = await this.orderRepository.save(order);
-		return this.selectOneOrderById(saveOrder.id);
+		return await Promise.all(map);
 	}
 
-	async selectOneOrderById(id: number) {
-		return await this.orderRepository.findOne({
-			where: { id },
-			relations: ['orderDetails', 'orderDetails.product'],
-		});
-	}
-
-	async getOrdersPagination(pagination: Pagination) {
+	async getOrdersPagination(pagination: Pagination, storeId: number) {
+		// tính tổng tiền productPrice.retailPrice * orderDetail.quantity
 		const queryBuilder = this.orderRepository
 			.createQueryBuilder('order')
 			.leftJoinAndSelect('order.orderDetails', 'orderDetail')
 			.leftJoinAndSelect('orderDetail.product', 'product')
-			.take(pagination.take)
+			.leftJoinAndSelect('product.productPrice', 'productPrice')
+			.leftJoinAndSelect('product.productCategory', 'productCategory')
+			.leftJoinAndSelect('product.store', 'store')
+			.orderBy('order.createdAt', 'DESC')
+			// nếu có  storeId thì mới join
+			.andWhere(storeId ? 'order.store_id = :storeId' : '1=1', {
+				storeId,
+			})
 			.skip(pagination.skip)
-			// xắp xếp theo tên quận huyện
-			.orderBy('orderDetail.id', 'DESC');
-		// lấy ra các trường cần thiết
-		// .select(['district.code', 'district.name', 'district.nameEn'])
-
+			.take(pagination.take);
 		const itemCount = await queryBuilder.getCount();
 		const { entities } = await queryBuilder.getRawAndEntities();
 		const meta = new Meta({ itemCount, pagination });

@@ -63,14 +63,14 @@ export class ProductsController {
 		return await this.productsService.getProductsPagination(dto, pagination);
 	}
 
-	@Get('store/:id')
-	@ApiParam({
-		name: 'id',
-		description: 'Id của store',
-		type: Number,
-	})
-	@Note('Lấy danh sách sản phẩm theo store')
-	async getProductsByShop(@Param('id') id: number) {
-		return await this.productsService.getProductsByStoreId(id);
-	}
+	// @Get('store/:id')
+	// @ApiParam({
+	// 	name: 'id',
+	// 	description: 'Id của store',
+	// 	type: Number,
+	// })
+	// @Note('Lấy danh sách sản phẩm theo store')
+	// async getProductsByShop(@Param('id') id: number) {
+	// 	return await this.productsService.getProductsByStoreId(id);
+	// }
 }
