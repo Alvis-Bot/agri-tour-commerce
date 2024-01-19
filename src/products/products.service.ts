@@ -46,10 +46,7 @@ export class ProductsService {
 			store,
 		});
 		const product = await this.productRepository.save(productCreated);
-		return new ProductModal()
-			.loadFromEntity(product)
-			.loadFromProductPrice(product.productPrice)
-			.loadFromProductCategory(product.productCategory);
+		return this.selectOneProductById(product.id);
 	}
 
 	async selectOneProductById(id: number) {
