@@ -7,28 +7,32 @@ import { TRANSPORT_METHOD_DATA } from '@/common/data/transport-method';
 
 @Injectable()
 export class DeliveryMethodsService
-  implements IDeliveryMethodService, OnModuleInit
+	implements IDeliveryMethodService, OnModuleInit
 {
-  constructor(
-    @InjectRepository(DeliveryMethod)
-    private readonly transportMethodRepository: Repository<DeliveryMethod>,
-  ) {}
+	constructor(
+		@InjectRepository(DeliveryMethod)
+		private readonly transportMethodRepository: Repository<DeliveryMethod>,
+	) {}
 
-  async getDeliveryMethods(): Promise<DeliveryMethod[]> {
-    return this.transportMethodRepository.find();
-  }
+	async getDeliveryMethods(): Promise<DeliveryMethod[]> {
+		return this.transportMethodRepository.find({
+			order: {
+				title: 'ASC',
+			},
+		});
+	}
 
-  async onModuleInit(): Promise<void> {
-    const transportMethodItems = await this.transportMethodRepository.count();
-    if (transportMethodItems) {
-      return;
-    }
-    await this.transportMethodRepository.insert(TRANSPORT_METHOD_DATA);
-  }
+	async onModuleInit(): Promise<void> {
+		const transportMethodItems = await this.transportMethodRepository.count();
+		if (transportMethodItems) {
+			return;
+		}
+		await this.transportMethodRepository.insert(TRANSPORT_METHOD_DATA);
+	}
 
-  selectDeliveryMethodById(id: number): Promise<DeliveryMethod> {
-    return this.transportMethodRepository.findOne({
-      where: { id },
-    });
-  }
+	selectDeliveryMethodById(id: number): Promise<DeliveryMethod> {
+		return this.transportMethodRepository.findOne({
+			where: { id },
+		});
+	}
 }

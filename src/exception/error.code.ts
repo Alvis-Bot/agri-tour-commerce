@@ -53,4 +53,8 @@ export const ErrorMessages = {
 		HttpStatus.BAD_REQUEST,
 		'Product not in store',
 	),
+	DELIVERY_METHOD_NOT_FOUND: errorFactory(
+		HttpStatus.NOT_FOUND,
+		'Delivery method not found',
+	),
 };
