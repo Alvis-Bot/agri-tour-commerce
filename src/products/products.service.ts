@@ -53,10 +53,13 @@ export class ProductsService {
 	}
 
 	async selectOneProductById(id: number) {
-		return await this.productRepository.findOne({
-			where: { id },
-			relations: ['productPrice', 'productCategory'],
-		});
+		return await this.productRepository
+			.createQueryBuilder('product')
+			.leftJoinAndSelect('product.productPrice', 'productPrice')
+			.leftJoinAndSelect('product.productCategory', 'productCategory')
+			.leftJoinAndSelect('product.store', 'store')
+			.where('product.id = :id', { id })
+			.getOne();
 	}
 
 	async selectOneProductFetchStoreById(id: number) {
@@ -69,11 +72,7 @@ export class ProductsService {
 	async getProductById(id: number) {
 		const product = await this.selectOneProductById(id);
 		if (!product) throw new ApiException(ErrorMessages.PRODUCT_NOT_FOUND);
-		return new ProductModal()
-			.loadFromEntity(product)
-			.loadFromProductPrice(product.productPrice)
-			.loadFromProductCategory(product.productCategory)
-			.loadFromStore(product.store);
+		return product;
 	}
 
 	async getProductsPagination(dto: ProductQueryDto, pagination: Pagination) {
