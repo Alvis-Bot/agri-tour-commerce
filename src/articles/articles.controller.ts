@@ -5,11 +5,12 @@ import { AuthUser } from '@/common/decorator/user.decorator';
 import { User } from '@/common/entities/user.entity';
 import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
 import { Pagination } from '@/common/pagination/pagination.dto';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Note } from '@/common/decorator/note.decorator';
 
 @Controller('articles')
 @UseGuards(FirebaseAuthGuard)
+@ApiTags('Article APIs - Quản lý bài viết')
 export class ArticlesController {
 	constructor(private readonly articlesService: ArticlesService) {}
 
