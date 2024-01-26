@@ -140,8 +140,8 @@ export class StoresService {
 		// tạo thông tin chứng minh cho shop
 		const identityCreated = this.identityRepository.create({
 			...dto,
-			identityImage: identityImage[0].filename,
-			identityImageHold: identityImageHold[0].filename,
+			identityImage: identityImage && identityImage[0].filename,
+			identityImageHold: identityImageHold && identityImageHold[0].filename,
 		});
 
 		const identity = await this.identityRepository.save(identityCreated);

@@ -25,11 +25,15 @@ export class Identity {
 	@Column()
 	fullName: string;
 
-	@Column()
+	@Column({
+		nullable: true,
+	})
 	// ảnh chứng minh nhân dân
 	identityImage: string;
 
 	// ảnh cầm  cmnd
-	@Column()
+	@Column({
+		nullable: true,
+	})
 	identityImageHold: string;
 }
