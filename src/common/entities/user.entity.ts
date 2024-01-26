@@ -15,6 +15,7 @@ import { UserRole } from '@/auth/role.builder';
 import { Order } from '@/common/entities/order.entity';
 import { ProductRatingEntity } from '@/common/entities/product/product-rating.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
+import { Article } from '@/common/entities/article.entity';
 
 @Entity('users')
 export class User extends AuditEntity {
@@ -66,4 +67,7 @@ export class User extends AuditEntity {
 
 	@OneToMany(() => ProductRatingEntity, (ratings) => ratings.user)
 	ratings: ProductRatingEntity[];
+
+	@OneToMany(() => Article, (article) => article.user)
+	articles: Article[];
 }
