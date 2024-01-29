@@ -76,6 +76,7 @@ export class ProductsService {
 		// add field sum rating
 		const queryBuilder = this.productRepository
 			.createQueryBuilder('product')
+			.leftJoinAndSelect('product.store', 'store')
 			.leftJoinAndSelect('product.productPrice', 'productPrice')
 			.leftJoinAndSelect('product.productCategory', 'productCategory')
 			// .leftJoinAndSelect('product.store', 'store')
