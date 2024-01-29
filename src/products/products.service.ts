@@ -100,7 +100,7 @@ export class ProductsService {
 
 		if (dto.search) {
 			// CHECK DATABASE :  CREATE EXTENSION IF NOT EXISTS unaccent;
-			queryBuilder.andWhere('unaccent(product.name) ILIKE :search', {
+			queryBuilder.andWhere('unaccent(product.name) ILIKE unaccent(:search)', {
 				search: `%${dto.search}%`,
 			});
 		}
