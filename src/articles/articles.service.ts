@@ -15,10 +15,15 @@ export class ArticlesService {
 		private readonly articleRepository: Repository<Article>,
 	) {}
 
-	async create(article: ArticleCreateDto, user: User): Promise<Article> {
+	async create(
+		article: ArticleCreateDto,
+		user: User,
+		image: Express.Multer.File,
+	): Promise<Article> {
 		const createdArticle = this.articleRepository.create({
 			...article,
 			user,
+			image: image?.filename,
 		});
 		return await this.articleRepository.save(createdArticle);
 	}

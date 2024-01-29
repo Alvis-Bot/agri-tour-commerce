@@ -18,6 +18,7 @@ import {
 	LocationType,
 } from '@/common/entities/store/location.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
+import { UserRole } from '@/auth/role.builder';
 
 @Injectable()
 export class StoresService {
@@ -33,6 +34,8 @@ export class StoresService {
 		private readonly locationEntityRepository: Repository<Location>,
 		@InjectRepository(Identity)
 		private readonly identityRepository: Repository<Identity>,
+		@InjectRepository(User)
+		private readonly userRepository: Repository<User>,
 	) {}
 
 	async selectOneStoreFetchByUserId(userId: number): Promise<Store> {
@@ -157,6 +160,14 @@ export class StoresService {
 				? businessLicense[0].filename
 				: undefined,
 		});
+
+		//  cập nhật role cho user
+		await this.userRepository
+			.createQueryBuilder()
+			.update()
+			.set({ roles: UserRole.SHOP })
+			.where('id = :id', { id: myUser.id })
+			.execute();
 
 		return await this.storeRepository.save(storeCreated);
 	}

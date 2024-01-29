@@ -18,6 +18,11 @@ export class Article extends AuditEntity {
 	})
 	content: string;
 
+	@Column({
+		nullable: true,
+	})
+	image: string;
+
 	@ManyToOne(() => User, (user) => user.articles)
 	user: User;
 }

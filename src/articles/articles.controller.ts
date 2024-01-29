@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+} from '@nestjs/common';
 import { ArticlesService } from '@/articles/articles.service';
 import { ArticleCreateDto } from '@/articles/dto/article-create.dto';
 import { AuthUser } from '@/common/decorator/user.decorator';
@@ -7,6 +15,9 @@ import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
 import { Pagination } from '@/common/pagination/pagination.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Note } from '@/common/decorator/note.decorator';
+import { ApiFile } from '@/common/decorator/file.decorator';
+import { UploadTypesEnum } from '@/common/enums/upload-types.enum';
+import { MulterUtils } from '@/common/utils/multer.utils';
 
 @Controller('articles')
 @UseGuards(FirebaseAuthGuard)
@@ -16,8 +27,13 @@ export class ArticlesController {
 
 	@Post()
 	@Note('Tạo bài viết')
-	async create(@AuthUser() user: User, @Body() dto: ArticleCreateDto) {
-		return await this.articlesService.create(dto, user);
+	@ApiFile('image', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
+	async create(
+		@UploadedFile() image: Express.Multer.File,
+		@AuthUser() user: User,
+		@Body() dto: ArticleCreateDto,
+	) {
+		return await this.articlesService.create(dto, user, image);
 	}
 
 	@Get()

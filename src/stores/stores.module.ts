@@ -7,11 +7,12 @@ import { DeliveryOption } from '@/common/entities/store/delivery-option.entity';
 import { DeliveryMethodsModule } from '@/delivery-methods/delivery-methods.module';
 import { Location } from '@/common/entities/store/location.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
+import { User } from '@/common/entities/user.entity';
 
 @Module({
 	imports: [
 		DeliveryMethodsModule,
-		TypeOrmModule.forFeature([Store, DeliveryOption, Location, Identity]),
+		TypeOrmModule.forFeature([Store, DeliveryOption, Location, Identity, User]),
 	],
 	controllers: [StoresController],
 	providers: [StoresService],

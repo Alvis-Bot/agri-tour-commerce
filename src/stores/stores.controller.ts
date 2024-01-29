@@ -72,52 +72,6 @@ export class StoresController {
 		);
 	}
 
-	// @Patch('step/one')
-	// @Note('Cập nhật thông tin cơ bản của store (user)')
-	// async updateShopStepOne(
-	// 	@AuthUser() myUser: User,
-	// 	@Body() dto: StoreUpdateStepOneDto,
-	// ) {
-	// 	return await this.shopService.updateShopStepOne(dto, myUser);
-	// }
-
-	// @Patch('step/two')
-	// @ApiFile('businessLicense', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
-	// @Note('Cập nhật thông tin cơ bản của store (user)')
-	// async updateShopStepTwo(
-	// 	@UploadedFile() businessLicense: Express.Multer.File,
-	// 	@AuthUser() myUser: User,
-	// 	@Body() dto: StoreUpdateStepTwoDto,
-	// ) {
-	// 	return await this.shopService.updateShopStepTwo(
-	// 		dto,
-	// 		myUser,
-	// 		businessLicense,
-	// 	);
-	// }
-
-	// @Patch('step/three')
-	// @ApiFileFields(
-	// 	[
-	// 		// gấu phép khinh doanh
-	// 		{ name: 'identityImage', maxCount: 1 },
-	// 		// hình ảnh đại diện kèm cccd
-	// 		{ name: 'identityImageHold', maxCount: 1 },
-	// 	],
-	// 	MulterUtils.getConfig(UploadTypesEnum.IMAGES),
-	// )
-	// async updateShopStepThree(
-	// 	@UploadedFiles()
-	// 	files: {
-	// 		identityImage: Express.Multer.File[];
-	// 		identityImageHold: Express.Multer.File[];
-	// 	},
-	// 	@AuthUser() myUser: User,
-	// 	@Body() dto: StoreUpdateStepThreeDto,
-	// ) {
-	// 	return await this.shopService.updateShopStepThree(dto, myUser, files);
-	// }
-
 	@Get('me')
 	@Note('Lấy thông tin store của tôi (store)')
 	async getStore(@AuthUser() myUser: User) {

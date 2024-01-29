@@ -89,12 +89,20 @@ export class ProductsService {
 					productCategoryId: dto.productCategoryId,
 				},
 			)
+
 			// nếu có storeId thì mới join
 			.andWhere(dto.storeId ? 'product.store_id = :storeId' : '1=1', {
 				storeId: dto.storeId,
 			})
 			.skip(pagination.skip)
 			.take(pagination.take);
+
+		if (dto.search) {
+			// CHECK DATABASE :  CREATE EXTENSION IF NOT EXISTS unaccent;
+			queryBuilder.andWhere('unaccent(product.name) ILIKE :search', {
+				search: `%${dto.search}%`,
+			});
+		}
 
 		const itemCount = await queryBuilder.getCount();
 		const { entities } = await queryBuilder.getRawAndEntities();
