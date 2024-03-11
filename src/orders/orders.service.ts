@@ -183,4 +183,16 @@ export class OrdersService {
 		order.status = dto.status;
 		return await this.orderRepository.save(order);
 	}
+
+	async getLatestOrder(myUser: User) {
+		return await this.orderRepository
+			.createQueryBuilder('order')
+			.leftJoinAndSelect('order.orderDetails', 'orderDetail')
+			.leftJoinAndSelect('orderDetail.product', 'product')
+			.leftJoinAndSelect('product.productPrice', 'productPrice')
+			.leftJoinAndSelect('product.store', 'store')
+			.where('order.user_id = :userId', { userId: myUser.id })
+			.orderBy('order.createdAt', 'DESC')
+			.getOne();
+	}
 }

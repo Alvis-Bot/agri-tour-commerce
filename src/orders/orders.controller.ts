@@ -64,4 +64,11 @@ export class OrdersController {
 	) {
 		return await this.ordersService.updateOrderStatus(dto, id);
 	}
+
+	// lấy thông tin đơn hàng của tôi gần nhất
+	@Get('latest')
+	@Note('Lấy thông tin đơn hàng của tôi gần nhất')
+	async getLatestOrder(@AuthUser() myUser: User) {
+		return await this.ordersService.getLatestOrder(myUser);
+	}
 }
