@@ -43,6 +43,11 @@ export class User extends AuditEntity {
 	@Column({ nullable: false, default: true })
 	isNew: boolean;
 
+	@Column({
+		nullable: true,
+	})
+	address: string;
+
 	@ManyToOne(() => Province)
 	@JoinColumn({ name: 'province_code' })
 	province: Province;
