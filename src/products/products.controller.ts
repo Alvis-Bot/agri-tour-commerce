@@ -6,6 +6,7 @@ import {
 	Post,
 	Query,
 	UploadedFiles,
+	UseGuards,
 } from '@nestjs/common';
 import { Routers } from '@/common/enums/routers';
 import { ProductsService } from '@/products/products.service';
@@ -17,12 +18,19 @@ import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Note } from '@/common/decorator/note.decorator';
 import { ProductQueryDto } from '@/products/dto/product-query.dto';
 import { Pagination } from '@/common/pagination/pagination.dto';
+import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
+import { RoleGuard } from '@/auth/guard/role.guard';
+import { RolesEnum } from '@/common/enums/roles.enum';
+import { Roles } from '@/common/decorator/roles.decorator';
+import { Public } from '@/common/decorator/public.meta';
 
 @Controller(Routers.PRODUCTS)
 @ApiTags('APIs for product - APIs sản phẩm')
+@UseGuards(FirebaseAuthGuard, RoleGuard)
 export class ProductsController {
 	constructor(private readonly productsService: ProductsService) {}
 
+	@Roles(RolesEnum.SHOP)
 	@Post(':storeId')
 	@ApiParam({
 		name: 'storeId',
@@ -48,6 +56,7 @@ export class ProductsController {
 		description: 'Id của sản phẩm',
 		type: Number,
 	})
+	@Public()
 	@Get(':id')
 	@Note('Lấy thông tin sản phẩm')
 	async getProductById(@Param('id') id: number) {
@@ -55,6 +64,7 @@ export class ProductsController {
 	}
 
 	@Get()
+	@Public()
 	@Note('Lấy danh sách sản phẩm')
 	async getProducts(
 		@Query() pagination: Pagination,
@@ -62,15 +72,4 @@ export class ProductsController {
 	) {
 		return await this.productsService.getProductsPagination(dto, pagination);
 	}
-
-	// @Get('store/:id')
-	// @ApiParam({
-	// 	name: 'id',
-	// 	description: 'Id của store',
-	// 	type: Number,
-	// })
-	// @Note('Lấy danh sách sản phẩm theo store')
-	// async getProductsByShop(@Param('id') id: number) {
-	// 	return await this.productsService.getProductsByStoreId(id);
-	// }
 }

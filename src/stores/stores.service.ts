@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CombinedDto, LocationDto } from '@/stores/dto/store-create.dto';
+import {
+	CombinedDto,
+	DeliveryMethodDto,
+	LocationDto,
+} from '@/stores/dto/store-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from '@/common/entities/store/store.entity';
 import { Repository } from 'typeorm';
@@ -109,20 +113,9 @@ export class StoresService {
 		if (store) throw new ApiException(ErrorMessages.STORE_ALREADY_EXISTS);
 
 		// tạo phuong thức vận chuyển cho shop
-		const deliveryOptionsCreated = await Promise.all(
-			dto.deliveryMethods.map(async (value) => {
-				const deliveryMethod =
-					await this.deliveryMethodService.selectDeliveryMethodById(value.id);
-				if (!deliveryMethod)
-					throw new ApiException(ErrorMessages.DELIVERY_METHOD_NOT_FOUND);
-				return this.deliveryOptionEntityRepository.create({
-					deliveryMethod,
-					isLocked: value.isLocked,
-				});
-			}),
-		);
-		const deliveryOptions = await this.deliveryOptionEntityRepository.save(
-			deliveryOptionsCreated,
+		const deliveryOptionsCreated = await this.createDeliveryOptions(
+			store,
+			dto.deliveryMethods,
 		);
 
 		// tạo địa chỉ cho shop
@@ -135,11 +128,6 @@ export class StoresService {
 			LocationType.STORE,
 		);
 
-		const locations = await this.locationEntityRepository.save([
-			collectionLocation,
-			storeLocation,
-		]);
-
 		// tạo thông tin chứng minh cho shop
 		const identityCreated = this.identityRepository.create({
 			...dto,
@@ -147,6 +135,14 @@ export class StoresService {
 			identityImageHold: identityImageHold && identityImageHold[0].filename,
 		});
 
+		const deliveryOptions = await this.deliveryOptionEntityRepository.save(
+			deliveryOptionsCreated,
+		);
+
+		const locations = await this.locationEntityRepository.save([
+			collectionLocation,
+			storeLocation,
+		]);
 		const identity = await this.identityRepository.save(identityCreated);
 
 		// tạo shop
@@ -170,6 +166,25 @@ export class StoresService {
 			.execute();
 
 		return await this.storeRepository.save(storeCreated);
+	}
+
+	async createDeliveryOptions(
+		store: Store,
+		deliveryMethods: DeliveryMethodDto[],
+	) {
+		return await Promise.all(
+			deliveryMethods.map(async (value) => {
+				const deliveryMethod =
+					await this.deliveryMethodService.selectDeliveryMethodById(value.id);
+				if (!deliveryMethod)
+					throw new ApiException(ErrorMessages.DELIVERY_METHOD_NOT_FOUND);
+				return this.deliveryOptionEntityRepository.create({
+					store,
+					deliveryMethod,
+					isLocked: value.isLocked,
+				});
+			}),
+		);
 	}
 
 	async getStoreByUser(user: User): Promise<Store> {

@@ -15,25 +15,23 @@ import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
 import { AuthUser } from '@/common/decorator/user.decorator';
 import { User } from '@/common/entities/user.entity';
 import { Pagination } from '@/common/pagination/pagination.dto';
-import { ACGuard, UseRoles } from 'nest-access-control';
 import { Public } from '@/common/decorator/public.meta';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiFileFields } from '@/common/decorator/file.decorator';
 import { MulterUtils } from '@/common/utils/multer.utils';
 import { UploadTypesEnum } from '@/common/enums/upload-types.enum';
+import { Roles } from '@/common/decorator/roles.decorator';
+import { RolesEnum } from '@/common/enums/roles.enum';
+import { RoleGuard } from '@/auth/guard/role.guard';
 
 @Controller(Routers.STORE)
-@UseGuards(FirebaseAuthGuard, ACGuard)
+@UseGuards(FirebaseAuthGuard, RoleGuard)
 @ApiTags('APIs for store - API cửa hàng')
 export class StoresController {
 	constructor(private readonly shopService: StoresService) {}
 
 	@Post()
-	@UseRoles({
-		resource: 'shop', // 👈 resource
-		action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-		possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào store của chính mình
-	})
+	@Roles(RolesEnum.USER)
 	@Note('Tạo mới store (user)')
 	@ApiFileFields(
 		[
@@ -62,7 +60,6 @@ export class StoresController {
 		@AuthUser() myUser: User,
 		@Body() dto: CombinedDto,
 	) {
-		console.log(dto);
 		return await this.shopService.createShop(
 			dto,
 			myUser,
@@ -73,6 +70,7 @@ export class StoresController {
 	}
 
 	@Get('me')
+	@Roles(RolesEnum.SHOP)
 	@Note('Lấy thông tin store của tôi (store)')
 	async getStore(@AuthUser() myUser: User) {
 		return await this.shopService.getStoreByUser(myUser);

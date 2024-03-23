@@ -1,10 +1,4 @@
-import {
-	IsEmail,
-	IsEnum,
-	IsNotEmpty,
-	IsString,
-	ValidateNested,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import {
 	ApiProperty,
 	ApiPropertyOptional,
@@ -76,7 +70,7 @@ class StoreCreateDto {
 }
 
 class StoreUpdateStepOneDto {
-	@ValidateNested()
+	// @ValidateNested()
 	@Type(() => DeliveryMethodDto)
 	@Transform(({ value }) => JSON.parse(value))
 	@ApiProperty({
