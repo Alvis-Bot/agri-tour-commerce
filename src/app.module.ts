@@ -9,8 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegionsModule } from './regions/regions.module';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
 import { StoresModule } from './stores/stores.module';
-import { AccessControlModule } from 'nest-access-control';
-import { roles } from '@/auth/role.builder';
+
 import { ProductsModule } from './products/products.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { OrdersModule } from './orders/orders.module';
@@ -20,7 +19,6 @@ import { ProductPricesModule } from './product-prices/product-prices.module';
 import { ArticlesModule } from './articles/articles.module';
 import { SharedModule } from './shared/shared.module';
 
-console.log(process.env.DB_PASSWORD);
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -35,7 +33,6 @@ console.log(process.env.DB_PASSWORD);
 			rootPath: join(__dirname, '..', 'uploads'),
 			serveRoot: '/',
 		}),
-		AccessControlModule.forRoles(roles),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: (configService: ConfigService) => ({

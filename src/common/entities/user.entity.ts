@@ -11,7 +11,6 @@ import { Province } from '@/common/entities/province.entity';
 import { District } from '@/common/entities/district.entity';
 import { Ward } from '@/common/entities/ward.entity';
 import { Store } from '@/common/entities/store/store.entity';
-import { UserRole } from '@/auth/role.builder';
 import { Order } from '@/common/entities/order.entity';
 import { ProductRatingEntity } from '@/common/entities/product/product-rating.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
@@ -38,7 +37,7 @@ export class User extends AuditEntity {
 	@Column({ nullable: false })
 	provider: string;
 
-	@Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+	@Column({ type: 'enum', enum: RolesEnum, default: RolesEnum.USER })
 	roles: RolesEnum;
 
 	@Column({ nullable: false, default: true })
