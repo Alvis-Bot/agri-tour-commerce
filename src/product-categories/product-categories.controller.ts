@@ -35,7 +35,6 @@ export class ProductCategoriesController {
 		@Body() dto: ProductCategoryCreate,
 		@UploadedFile() image: Express.Multer.File,
 	) {
-		console.log(dto);
 		return await this.productCategoriesService.createProductCategory(
 			image,
 			dto,
