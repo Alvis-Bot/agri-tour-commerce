@@ -18,7 +18,7 @@ import {
 	LocationType,
 } from '@/common/entities/store/location.entity';
 import { Identity } from '@/common/entities/store/identity.entity';
-import { UserRole } from '@/auth/role.builder';
+import { RolesEnum } from '@/common/enums/roles.enum';
 
 @Injectable()
 export class StoresService {
@@ -165,7 +165,7 @@ export class StoresService {
 		await this.userRepository
 			.createQueryBuilder()
 			.update()
-			.set({ roles: UserRole.SHOP })
+			.set({ roles: RolesEnum.SHOP })
 			.where('id = :id', { id: myUser.id })
 			.execute();
 

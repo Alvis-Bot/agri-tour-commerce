@@ -15,26 +15,19 @@ import { ApiFile } from '@/common/decorator/file.decorator';
 import { ProductCategoriesService } from '@/product-categories/product-categories.service';
 import { ProductCategoryCreate } from '@/product-categories/dto/product-category-create';
 import { Note } from '@/common/decorator/note.decorator';
-import { StoresService } from '@/stores/stores.service';
 import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
-import { ACGuard } from 'nest-access-control';
 import { Public } from '@/common/decorator/public.meta';
+import { RoleGuard } from '@/auth/guard/role.guard';
 
 @Controller('product-categories')
-@ApiTags('APIs for product categories - API danh mục sản phẩm')
-@UseGuards(FirebaseAuthGuard, ACGuard)
+@ApiTags('APIs product categories - API danh mục sản phẩm')
+@UseGuards(FirebaseAuthGuard, RoleGuard)
 export class ProductCategoriesController {
 	constructor(
 		private readonly productCategoriesService: ProductCategoriesService,
-		private readonly shopService: StoresService,
 	) {}
 
 	@Post()
-	// @UseRoles({
-	//   resource: 'product-categories', // 👈 resource
-	//   action: 'create', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-	//   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-	// })
 	@Public()
 	@Note('Tạo mới danh mục sản phẩm')
 	@ApiFile('image', MulterUtils.getConfig(UploadTypesEnum.IMAGES))
@@ -51,26 +44,13 @@ export class ProductCategoriesController {
 
 	@Get()
 	@Public()
-
-	// @Public()
-	// @UseRoles({
-	//   resource: 'product-categories', // 👈 resource
-	//   action: 'read', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-	//   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-	// })
-	@Note('Lấy danh sách danh mục sản phẩm theo store')
+	@Note('Lấy danh sách danh mục sản phẩm')
 	async getProductCategories() {
 		return await this.productCategoriesService.getProductCategories();
 	}
 
 	@Delete(':id')
 	@Public()
-
-	// @UseRoles({
-	//   resource: 'product-categories', // 👈 resource
-	//   action: 'delete', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-	//   possession: 'own', // 👈 possession (e.g., own, any) // own : chỉ tác động vào danh mục sản phẩm của chính mình
-	// })
 	@Note('Xóa danh mục sản phẩm')
 	async deleteProductCategories(@Param('id') id: number) {
 		return await this.productCategoriesService.deleteProductCategories(id);

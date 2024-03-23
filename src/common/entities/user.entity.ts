@@ -16,6 +16,7 @@ import { Order } from '@/common/entities/order.entity';
 import { ProductRatingEntity } from '@/common/entities/product/product-rating.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
 import { Article } from '@/common/entities/article.entity';
+import { RolesEnum } from '@/common/enums/roles.enum';
 
 @Entity('users')
 export class User extends AuditEntity {
@@ -38,7 +39,7 @@ export class User extends AuditEntity {
 	provider: string;
 
 	@Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
-	roles: UserRole;
+	roles: RolesEnum;
 
 	@Column({ nullable: false, default: true })
 	isNew: boolean;

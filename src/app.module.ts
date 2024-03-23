@@ -18,6 +18,7 @@ import { ProductRatingModule } from './product-rating/product-rating.module';
 import { DeliveryMethodsModule } from './delivery-methods/delivery-methods.module';
 import { ProductPricesModule } from './product-prices/product-prices.module';
 import { ArticlesModule } from './articles/articles.module';
+import { SharedModule } from './shared/shared.module';
 
 console.log(process.env.DB_PASSWORD);
 @Module({
@@ -65,6 +66,7 @@ console.log(process.env.DB_PASSWORD);
 		DeliveryMethodsModule,
 		ProductPricesModule,
 		ArticlesModule,
+		SharedModule,
 	],
 })
 export class AppModule {}

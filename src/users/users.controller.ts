@@ -1,77 +1,60 @@
 import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards,
+	Body,
+	Controller,
+	Get,
+	Patch,
+	Query,
+	Req,
+	UseGuards,
 } from '@nestjs/common';
 import { Routers } from '@/common/enums/routers';
-import { LoginDto } from '@/users/dto/login.dto';
 import { UsersService } from '@/users/users.service';
 import { User } from '@/common/entities/user.entity';
 import { FirebaseAuthGuard } from '@/auth/guard/firebase-auth.guard';
 import { UserUpdateDto } from '@/users/dto/user-update.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Note } from '@/common/decorator/note.decorator';
-import { ACGuard, UseRoles } from 'nest-access-control';
 import { AuthUser } from '@/common/decorator/user.decorator';
 import { Pagination } from '@/common/pagination/pagination.dto';
 import { Public } from '@/common/decorator/public.meta';
-
-interface AuthRequest {
-  user: User;
-}
+import { RoleGuard } from '@/auth/guard/role.guard';
+import { Roles } from '@/common/decorator/roles.decorator';
+import { RolesEnum } from '@/common/enums/roles.enum';
+import { AuthenticatedRequest } from '@/common/interface';
 
 @Controller(Routers.USERS)
-@UseGuards(FirebaseAuthGuard, ACGuard)
-@ApiTags('UserEntity APIs  - Quản lý tài khoản')
+@UseGuards(FirebaseAuthGuard, RoleGuard)
+@ApiTags('APIs users - Quản lý tài khoản')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) {}
 
-  @Patch('')
-  @UseRoles({
-    resource: 'users', // 👈 resource
-    action: 'update', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any)
-  })
-  @Note('Cập nhật thông tin tài khoản')
-  async updateInfo(@Body() dto: UserUpdateDto, @Req() req: AuthRequest) {
-    return await this.usersService.updateAccount(dto, req.user);
-  }
+	@Patch('')
+	@Roles(RolesEnum.USER)
+	@Note('Cập nhật thông tin tài khoản')
+	async updateMyInfo(
+		@Body() dto: UserUpdateDto,
+		@Req() req: AuthenticatedRequest,
+	) {
+		return await this.usersService.updateMyInfo(dto, req.user);
+	}
 
-  @Post()
-  @UseRoles({
-    resource: 'users', // 👈 resource
-    action: 'update', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any)
-  })
-  @Note('Cập nhật token firebase (hiện tại chưa cần dùng)')
-  async login(@Body() dto: LoginDto, @Req() req: AuthRequest) {
-    return await this.usersService.updateFcmToken(dto, req.user);
-  }
+	// @Post()
+	// @Note('Cập nhật token firebase (hiện tại chưa cần dùng)')
+	// async login(@Body() dto: LoginDto, @Req() req: AuthRequest) {
+	// 	return await this.usersService.updateFcmToken(dto, req.user);
+	// }
 
-  @Get('me')
-  @UseRoles({
-    resource: 'users', // 👈 resource
-    action: 'read', // 👈 action (e.g., create:own, update:any, read:own, delete:own)
-    possession: 'own', // 👈 possession (e.g., own, any)
-  })
-  @Note('Lấy thông tin tài khoản')
-  async getAccount(@AuthUser() user: User) {
-    return await this.usersService.getAccount(user);
-  }
+	@Get('me')
+	@Roles(RolesEnum.USER)
+	@Note('Lấy thông tin tài khoản')
+	async getMyInfo(@AuthUser() user: User) {
+		return await this.usersService.getMyInfo(user);
+	}
 
-
-  @Get('')
-  @Public()
-  @Note('Lấy danh sách tài khoản')
-  async getUsersWithPagination(
-    @Query() pagination: Pagination,
-  ) {
-    return await this.usersService.getUsersWithPagination(pagination);
-  }
-
+	@Get('')
+	@Public()
+	@Note('Lấy danh sách tài khoản')
+	async getUsersWithPagination(@Query() pagination: Pagination) {
+		return await this.usersService.getUsersWithPagination(pagination);
+	}
 }
