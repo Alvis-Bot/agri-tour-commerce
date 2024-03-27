@@ -18,6 +18,7 @@ import { DeliveryMethodsModule } from './delivery-methods/delivery-methods.modul
 import { ProductPricesModule } from './product-prices/product-prices.module';
 import { ArticlesModule } from './articles/articles.module';
 import { SharedModule } from './shared/shared.module';
+import { ArticleCategoriesModule } from './article-categories/article-categories.module';
 
 @Module({
 	imports: [
@@ -64,6 +65,7 @@ import { SharedModule } from './shared/shared.module';
 		ProductPricesModule,
 		ArticlesModule,
 		SharedModule,
+		ArticleCategoriesModule,
 	],
 })
 export class AppModule {}

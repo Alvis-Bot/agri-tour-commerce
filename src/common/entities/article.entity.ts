@@ -1,6 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Column,
+	Entity,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '@/common/entities/user.entity';
 import { AuditEntity } from '@/common/entities/audit.entity';
+import { ArticleCategory } from '@/common/entities/article-category.entity';
 
 @Entity('articles')
 export class Article extends AuditEntity {
@@ -15,6 +23,12 @@ export class Article extends AuditEntity {
 
 	@Column({
 		type: 'text',
+		nullable: true,
+	})
+	description: string;
+
+	@Column({
+		type: 'text',
 	})
 	content: string;
 
@@ -25,4 +39,8 @@ export class Article extends AuditEntity {
 
 	@ManyToOne(() => User, (user) => user.articles)
 	user: User;
+
+	@ManyToMany(() => ArticleCategory, (category) => category.articles)
+	@JoinTable()
+	categories: ArticleCategory[];
 }

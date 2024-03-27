@@ -7,10 +7,14 @@ import { User } from '@/common/entities/user.entity';
 import { Pagination } from '@/common/pagination/pagination.dto';
 import { Meta } from '@/common/pagination/meta.dto';
 import { PaginationModel } from '@/common/pagination/pagination.model';
+import { ArticleCategoriesService } from '@/article-categories/article-categories.service';
+import { ApiException } from '@/exception/api.exception';
+import { ErrorMessages } from '@/exception/error.code';
 
 @Injectable()
 export class ArticlesService {
 	constructor(
+		private readonly articleCategoriesService: ArticleCategoriesService,
 		@InjectRepository(Article)
 		private readonly articleRepository: Repository<Article>,
 	) {}
@@ -20,10 +24,24 @@ export class ArticlesService {
 		user: User,
 		image: Express.Multer.File,
 	): Promise<Article> {
+		// kiểm tra xem category có tồn tại không
+		const categories = await Promise.all(
+			article.articleCategories.map(async (categoryId) => {
+				const category =
+					await this.articleCategoriesService.findArticleCategoryById(
+						categoryId,
+					);
+				if (!category) {
+					throw new ApiException(ErrorMessages.CATEGORY_PRODUCT_NOT_FOUND);
+				}
+				return category;
+			}),
+		);
 		const createdArticle = this.articleRepository.create({
 			...article,
 			user,
 			image: image?.filename,
+			categories,
 		});
 		return await this.articleRepository.save(createdArticle);
 	}
@@ -32,6 +50,7 @@ export class ArticlesService {
 		const queryBuilder = this.articleRepository
 			.createQueryBuilder('article')
 			.leftJoinAndSelect('article.user', 'user')
+			.leftJoinAndSelect('article.categories', 'categories')
 			.take(pagination.take)
 			.skip(pagination.skip)
 			.orderBy('article.createdAt', pagination.order);

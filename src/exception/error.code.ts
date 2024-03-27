@@ -58,4 +58,12 @@ export const ErrorMessages = {
 		'Delivery method not found',
 	),
 	ORDER_NOT_FOUND: errorFactory(HttpStatus.NOT_FOUND, 'Order not found'),
+	CATEGORY_NAME_EXISTED: errorFactory(
+		HttpStatus.CONFLICT,
+		'Category name existed',
+	),
+	ARTICLE_CATEGORY_NOT_FOUND: errorFactory(
+		HttpStatus.NOT_FOUND,
+		'Article category not found',
+	),
 };
